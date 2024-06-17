@@ -190,8 +190,8 @@
                         <h2 class="h4 mb-3">Product status</h2>
                         <div class="mb-3">
                             <select name="status" id="status" class="form-control">
-                                <option value="1">Active</option>
-                                <option value="0">Block</option>
+                                <option value="1"> Publish</option>
+                                <option value="0"> Draft</option>
                                 <p class="error"></p>
 
                             </select>

@@ -36,6 +36,11 @@ return [
     */
 
     'guards' => [
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'admins',
+            'remember' => 43800
+        ],
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
@@ -43,11 +48,7 @@ return [
                 'expires' => now()->addMinutes(env('REMEMBER_ME_DURATION', 10080)),
             ],
         ],
-        'admin' => [
-            'driver' => 'session',
-            'provider' => 'admins',
-            'remember' => 43800
-        ],
+
     ],
 
     /*
@@ -68,14 +69,16 @@ return [
     */
 
     'providers' => [
+
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Admin::class,
+        ],
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
-        'admins' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\Admin::class,
-        ]
+
 
         // 'users' => [
         //     'driver' => 'database',

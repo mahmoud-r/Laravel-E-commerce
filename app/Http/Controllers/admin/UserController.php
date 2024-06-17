@@ -19,18 +19,12 @@ class UserController extends Controller
 
     public function index(Request $request)
     {
-        $users = User::latest();
+        return view('admin.users.index');
+    }
+    public function getAll() {
+        $users = User::latest()->get();
 
-        if (!empty($request->keyword)){
-
-            $users = User::where('name','like','%'.$request->keyword.'%')
-            ->orwhere('phone','like','%'.$request->keyword.'%')
-            ->orwhere('email','like','%'.$request->keyword.'%');
-
-        }
-
-        $users = $users->paginate(10);
-        return view('admin.users.index',compact('users'));
+        return response()->json($users);
     }
 
 

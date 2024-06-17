@@ -71,13 +71,25 @@
         <div class="container">
             <div class="nav_block">
                 <a class="navbar-brand" href="{{route('home')}}">
-                    <img class="logo_light" src="{{asset('front_assets/images/logo_light.png')}}" alt="logo" />
-                    <img class="logo_dark" src="{{asset('front_assets/images/logo_dark.png')}}" alt="logo" />
+                    @if(!empty(get_setting('store_logo_white')))
+                        <div>
+                            <img class="logo_light" src="{{asset('uploads/site/images/'.get_setting('store_logo_white'))}}" alt="{{get_setting('store_name')}}" >
+                        </div>
+                    @else
+                        <img class="logo_light" src="{{asset('/front_assets/images/logo_light.png')}}" alt="{{get_setting('store_name')}}" >
+                    @endif
+                        @if(!empty(get_setting('store_logo')))
+                            <div>
+                                <img class="logo_dark" src="{{asset('uploads/site/images/'.get_setting('store_logo'))}}" alt="{{get_setting('store_name')}}">
+                            </div>
+                        @else
+                            <img class="logo_dark" src="{{asset('/front_assets/images/logo_dark.png')}}" alt="{{get_setting('store_name')}}">
+                        @endif
                 </a>
                 @include('front.layouts.header.search')
                 <div class="contact_phone contact_support">
                     <i class="linearicons-phone-wave"></i>
-                    <span>123-456-7689</span>
+                    <span>{{ get_setting('store_phone')}}</span>
                 </div>
 
             </div>
@@ -459,8 +471,20 @@
             <div class="row">
                 <div class="col-lg-3 col-md-4 col-sm-6 col-3">
                     <a class="navbar-brand" href="{{route('home')}}">
-                        <img class="logo_light" src="{{asset('front_assets/images/logo_light.png')}}" alt="logo" />
-                        <img class="logo_dark" src="{{asset('front_assets/images/logo_dark.png')}}" alt="logo" />
+                        @if(!empty(get_setting('store_logo_white')))
+                            <div>
+                                <img class="logo_light" src="{{asset('uploads/site/images/'.get_setting('store_logo_white'))}}" alt="{{get_setting('store_name')}}" >
+                            </div>
+                        @else
+                            <img class="logo_light" src="{{asset('/front_assets/images/logo_light.png')}}" alt="{{get_setting('store_name')}}" >
+                        @endif
+                        @if(!empty(get_setting('store_logo')))
+                            <div>
+                                <img class="logo_dark" src="{{asset('uploads/site/images/'.get_setting('store_logo'))}}" alt="{{get_setting('store_name')}}">
+                            </div>
+                        @else
+                            <img class="logo_dark" src="{{asset('/front_assets/images/logo_dark.png')}}" alt="{{get_setting('store_name')}}">
+                        @endif
                     </a>
 
                 </div>

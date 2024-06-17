@@ -35,7 +35,9 @@
                     <div class="col-md-12">
                         <div class="mb-3">
                             <label for="category">Category</label>
-                            <input type="text" name="category" id="category" readonly value="{{$category->name}}"  class="form-control " placeholder="Name">
+                            <select name="category" class="form-control " readonly id="category"  >
+                                <option value="{{$category->id}}"  selected>{{$category->name}}</option>
+                            </select>
                             <p></p>
 
                         </div>
@@ -58,8 +60,8 @@
                         <div class="mb-3">
                             <label for="status">status</label>
                             <select name="status" id="status" class=" form-control"  >
-                                <option value="1"> Active</option>
-                                <option value="0"> Deactivate</option>
+                                <option value="1"> Publish</option>
+                                <option value="0"> Draft</option>
                             </select>
                             <p></p>
                         </div>

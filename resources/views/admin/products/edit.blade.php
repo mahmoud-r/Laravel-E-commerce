@@ -203,8 +203,8 @@
                         <h2 class="h4 mb-3">Product status</h2>
                         <div class="mb-3">
                             <select name="status" id="status" class="form-control">
-                                <option value="1" {{$product->status == 1 ? 'selected' :''}}>Active</option>
-                                <option value="0" {{$product->status == 0 ? 'selected' :''}}>Block</option>
+                                <option value="1" {{$product->status == 1 ? 'selected' :''}}>Publish</option>
+                                <option value="0" {{$product->status == 0 ? 'selected' :''}}>Draft</option>
                                 <p class="error"></p>
 
                             </select>

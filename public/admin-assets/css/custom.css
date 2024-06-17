@@ -296,3 +296,68 @@ p{
     left: 0;
     font-weight: 900;
 }
+div.dataTables_wrapper div.dataTables_filter {
+    padding: 10px 10px 0 10px;
+}
+div.dataTables_wrapper div.dataTables_info,div.dataTables_wrapper div.dataTables_paginate{
+    padding: 10px;
+}
+.dataTables_length {
+    padding-right: 10px;
+}
+.dt-btn{
+    background-color: #fff !important;
+    border-color: #dce1e7!important;
+    border-radius: .25rem!important;
+    display: inline-block!important;
+    background-image: none !important;
+}
+.dt-btn .icon {
+    --bb-icon-size: 1.25rem;
+    stroke-width: 1.5;
+    font-size: var(--bb-icon-size);
+    vertical-align: bottom;
+    height: var(--bb-icon-size);
+    width: var(--bb-icon-size);
+}
+.dt-down-arrow{
+    --bb-icon-size: 0.5rem;
+    stroke-width: 1.5;
+    font-size: var(--bb-icon-size);
+    vertical-align: bottom;
+    height: var(--bb-icon-size);
+    margin: 0 calc(1rem / 2) 0 calc(1rem / -4);
+    width: var(--bb-icon-size);
+    padding-left: 5px;
+
+}
+.dt-buttons{
+    display: flex;
+}
+.dt-button-background{
+    background: transparent !important;
+}
+.card-header{
+    border-bottom: 0;
+}
+.dataTables_wrapper .bottom{
+    display: flex;
+    justify-content: space-between;
+}
+#card-tools .input-group{
+    justify-content: flex-end;
+}
+.icon {
+    --bb-icon-size: 1.25rem;
+    stroke-width: 1.5;
+    font-size: var(--bb-icon-size);
+    height: var(--bb-icon-size);
+    vertical-align: bottom;
+    width: var(--bb-icon-size);
+}
+.text-decoration-none {
+    text-decoration: none !important;
+}
+.fw-bold, .fw-semibold {
+    font-weight: 600 !important;
+}

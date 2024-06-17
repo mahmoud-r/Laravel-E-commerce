@@ -3,8 +3,18 @@
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Product_Image;
+use App\Models\Settings;
 use App\Models\Wishlist;
 use Illuminate\Support\Facades\Auth;
+
+
+if (!function_exists('get_setting')) {
+    function get_setting($key, $default = null)
+    {
+        return Settings::get($key, $default);
+    }
+}
+
 
 function getCategories(){
 

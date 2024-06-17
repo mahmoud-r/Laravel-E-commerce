@@ -3,9 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 use App\Models\User;
+use App\Notifications\admin\NewUserNotification;
+use App\Notifications\user\WelcomeNotification;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
@@ -71,11 +75,23 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
 
-        return User::create([
+        $user= User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'phone' => $data['phone'],
             'password' => Hash::make($data['password']),
         ]);
+
+        if (get_setting('email_user_register')){
+            $user->notify(new WelcomeNotification());
+        }
+        if (get_setting('email_user_register_admin')){
+            $admins = Admin::where('notification','1')->get();
+
+            Notification::send($admins, new NewUserNotification($user));
+
+        }
+
+        return $user;
     }
 }

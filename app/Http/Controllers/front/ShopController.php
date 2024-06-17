@@ -209,7 +209,7 @@ class ShopController extends Controller
             return response()->json([
                 'status' =>false,
                 'rated_before' => true,
-                'msg'=>'You already rated this product.'
+                'msg'=>'You already rated this product.'.$count
             ]);
         }
         ProductRating::create([

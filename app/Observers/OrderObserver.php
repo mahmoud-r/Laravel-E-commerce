@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Auth;
 class OrderObserver
 {
 
-
     public function deleting(Order $order)
     {
         if ($order->isForceDeleting()) {

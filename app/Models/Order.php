@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Notifications\user\OrderCompletedNotification;
+use App\Notifications\user\OrderDeliveringNotification;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Notification;
 use Vinkla\Hashids\Facades\Hashids;
 
 class Order extends Model
@@ -44,7 +47,7 @@ class Order extends Model
 
     public function items()
     {
-        return $this->hasMany(Order_item::class, 'order_id', 'id');
+        return $this->hasMany(Order_item::class);
     }
 
     public function user()
@@ -74,7 +77,7 @@ class Order extends Model
 
     public function address()
     {
-        return $this->hasOne(OrderAddress::class, 'order_id');
+        return $this->hasOne(OrderAddress::class);
     }
 
     public static function checkOrderCompletion($orderId)
@@ -83,10 +86,21 @@ class Order extends Model
 
         if ($order->payment->status == 'completed' && $order->shipment->status == 'Delivered') {
             $order->status->update(['status' => 'completed']);
+
+            // Check user notification setting
+            if (config('settings.email_user_review_when_order_completed')) {
+                Notification::send($order->user, new OrderCompletedNotification($order));
+            }
+
         } elseif ($order->payment->status == 'failed' && $order->shipment->status == 'Canceled') {
             $order->status->update(['status' => 'cancelled']);
         } elseif ( $order->shipment->status == 'Delivering') {
             $order->status->update(['status' => 'shipping']);
+
+            // Check user notification setting
+            if (config('settings.email_user_order_delivering')) {
+                Notification::send($order->user, new OrderDeliveringNotification($order));
+            }
         }
     }
 

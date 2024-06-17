@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\front;
 
+use App\Events\NewOrder;
 use App\Http\Controllers\Controller;
 use App\Http\Traits\CartTrait;
 use App\Http\Traits\CouponTrait;
@@ -94,6 +95,7 @@ class CheckoutController extends Controller
                 return $order;
             });
 
+            event(new NewOrder($order));
 
             Cart::instance('default')->destroy();
             session()->forget('code');

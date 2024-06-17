@@ -23,104 +23,48 @@
 @endsection
 @section('content')
     <div class="container-fluid">
+        <div class="card mb-3 table-configuration-wrap" id="filter-card" style="display: none " >
+            <div class="card-body" id="searchBuilder" >
+
+            </div>
+        </div>
+
         <div class="card">
-            <form action="" method="get">
+            <div class="card-header ">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card-title d-flex justify-content-end align-items-center" id="card-title">
 
-                <div class="card-header">
-                    <div class="card-title">
-                        <button type="button" onclick="window.location.href='{{route('products.index')}}'" class="btn btn-default btn-sm">Reset</button>
-                    </div>
-                    <div class="card-tools">
-                        <div class="input-group input-group" style="width: 250px;">
-                            <input type="text" name="keyword" value="{{Request::get('keyword')}}" class="form-control  float-right" placeholder="Search">
-
-                            <div class="input-group-append">
-                                <button type="submit" class="btn btn-default">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </div>
                         </div>
                     </div>
+                    <div class="col-md-6 d-flex justify-content-end align-items-center">
+                        <div class="card-tools" id="card-tools">
+                            <div class="input-group input-group" style="width: 250px;">
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
-
-            </form>
-
+            </div>
             <div class="card-body table-responsive p-0">
-                <table class="table table-hover text-nowrap">
+                <table class="table table-hover text-nowrap" id="myTable" style="width: 100%">
                     <thead>
                     <tr>
-                        <th width="60">ID</th>
-                        <th width="80"></th>
+                        <th>#</th>
+                        <th></th>
                         <th>Product</th>
+                        <th>category</th>
                         <th>Price</th>
                         <th>Qty</th>
                         <th>SKU</th>
-                        <th width="100">Status</th>
-                        <th width="100">Action</th>
+                        <th>Status</th>
+                        <th>Action</th>
                     </tr>
                     </thead>
-                    <tbody>
-                    @forelse($products as $i =>$product)
 
-                        <tr id="product_{{$product->id}}">
-
-                            <td>{{ $products->firstItem() + $i }}</td>
-
-                            @php
-                                $productImage = $product->images->first();
-                            @endphp
-
-                            <td>
-                            @if(!empty($productImage->image))
-
-                                <img src="{{asset('uploads/products/images/thumb/'.$productImage->image)}}" class="img-thumbnail" width="50" >
-                                @else
-                                    <img src="{{asset('admin-assets/img/default-150x150.png')}}" class="img-thumbnail" width="50" >
-                                @endif
-                            </td>
-                            <td style="white-space: normal;">
-                               <a href="#">{{$product->title}}</a>
-                            </td>
-
-                            <td>${{$product->price}}</td>
-                            <td>{{$product->qty}} left in Stock</td>
-                            <td>{{$product->sku}}</td>
-                            <td>
-                                @if($product->status == 1 )
-
-                                    <svg class="text-success-500 h-6 w-6 text-success" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                @else
-                                    <svg class="text-danger h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                @endif
-                            </td>
-                            <td>
-                                <a href="{{route('products.edit',$product->id)}}">
-                                    <svg class="filament-link-icon w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
-                                    </svg>
-                                </a>
-                                <a href="#" onclick="ProductDelete({{$product->id}},'{{$product->title}}')" class="text-danger w-4 h-4 mr-1">
-                                    <svg  class="filament-link-icon w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path	ath fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                                    </svg>
-                                </a>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="8" class="text-center"> Currently, there are no Products . <a href="{{ route('products.create') }}">Add one?</a> </td>
-                        </tr>
-                    @endforelse
-                    </tbody>
                 </table>
             </div>
-            <div class="card-footer clearfix">
-                {{$products->links()}}
-            </div>
+
         </div>
     </div>
 
@@ -170,5 +114,190 @@
         });
     }
 
+    $(document).ready(function() {
+        var currentDate = new Date();
+        var day = ("0" + currentDate.getDate()).slice(-2);
+        var month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
+        var year = currentDate.getFullYear();
+        var formattedDate = day + '-' + month + '-' + year;
+
+        var hCols = [];
+        var title = 'Products-' + formattedDate;
+
+        var table = $('#myTable').DataTable({
+            rowReorder: true,
+            responsive: true,
+            autoWidth: false,
+            ajax: {
+                url: '{{route('products.getAll')}}',
+                dataSrc: ''
+            },
+            language: {
+                searchBuilder: {
+                    add: '+',
+                    condition: 'Comparator',
+                    clearAll: 'Reset',
+                    delete: 'Delete',
+                    deleteTitle: 'Delete Title',
+                    data: 'Column',
+                    left: 'Left',
+                    leftTitle: 'Left Title',
+                    logicAnd: 'AND',
+                    logicOr: 'Or',
+                    right: 'Right',
+                    rightTitle: 'Right Title',
+                    title: {
+                        0: 'Filters',
+                        _: 'Filters (%d)'
+                    },
+                    value: 'Option',
+                    valueJoiner: 'et'
+                }
+            },
+            dom: '<"top"QlfB>rt<"bottom"ip><"clear">',
+            columns: [
+                { data: null, title: '#', render: function(data, type, row, meta) {
+                        return meta.row + 1;
+                    }},
+                { data: 'images', title: 'Image', render: function(data, type, row) {
+                        var image = data && data.length ?
+                            '<img src="{{asset("uploads/products/images/thumb")}}/' + data[0].image + '" class="img-thumbnail" width="50">' :
+                            '<img src="{{asset("admin-assets/img/default-150x150.png")}}" class="img-thumbnail" width="50">';
+                        return image;
+                    }},
+                { data: 'title', title: 'Title', render: function(data, type, row) {
+                        var productUrl = '{{route('products.edit',':id')}}'.replace(':id',row.id);
+                        return '<a href="'+productUrl+'">' + data + '</a>';
+                    }},
+                { data: 'category.name', title: 'category' },
+                { data: 'price', title: 'Price', render: function(data, type, row) {
+                        return '$' + data;
+                    }},
+                { data: 'qty', title: 'Quantity', render: function(data, type, row) {
+                        return data ;
+                    }},
+                { data: 'sku', title: 'SKU' },
+                { data: 'status', title: 'Status', render: function(data, type, row) {
+                        return data == 1 ?
+                            '<span class="badge bg-success text-success-fg">Published</span>' :
+                            '<span class="badge bg-secondary text-secondary-fg">Draft</span>';
+                    }},
+                { data: null, title: 'Actions', render: function(data, type, row) {
+                        var productUrl = '{{ route("products.edit", ":id") }}'.replace(':id', row.id);
+                        return '<a href="'+productUrl +'">'+
+                            '<svg class="filament-link-icon w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">' +
+                            '<path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>' +
+                            '</svg>' +
+                            '</a>' +
+                            '<a href="#" onclick="ProductDelete(' + row.id + ', \'' + row.title + '\')" class="text-danger w-4 h-4 mr-1">' +
+                            '<svg class="filament-link-icon w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">' +
+                            '<path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>' +
+                            '</svg>' +
+                            '</a>';
+                    }}
+            ],
+            rowCallback: function(row, data) {
+                $(row).attr('id', 'product_' + data.id);
+            },
+            buttons: [{
+                extend: 'collection',
+                text: `<span>
+                              <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                              <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"></path>
+                              <path d="M7 11l5 5l5 -5"></path>
+                              <path d="M12 4l0 12"></path>
+                            </svg> Export
+                    </span> `,
+                className: 'btn dt-btn',
+                buttons: [{
+                    text: 'Excel',
+                    extend: 'excelHtml5',
+                    className: 'btn dt-btn',
+                    title: title,
+                    footer: false,
+                    exportOptions: {
+                        columns: [0,2,3,4,5,6,7],
+                        modifier: {
+                            page: 'current'
+                        }
+                    },
+                }, {
+                    text: 'CSV',
+                    extend: 'csvHtml5',
+                    className: 'btn dt-btn',
+                    title: title,
+                    fieldSeparator: ';',
+                    exportOptions: {
+                        columns: [0,2,3,4,5,6,7],
+                        modifier: {
+                            page: 'current'
+                        }
+                    },
+                }, {
+                    text: 'Print',
+                    extend: 'print',
+                    className: 'btn dt-btn',
+                    title: title,
+                    exportOptions: {
+                        columns: [0,2,3,4,5,6,7],
+                        modifier: {
+                            page: 'current'
+                        }
+                    },
+                }, {
+                    text: 'PDF',
+                    extend: 'pdfHtml5',
+                    className: 'btn dt-btn',
+                    title: title,
+                    message: '',
+                    exportOptions: {
+                        columns: [0,2,3,4,5,6,7],
+                        modifier: {
+                            page: 'current'
+                        }
+                    },
+                },]
+            }],
+            searchBuilder: {
+                columns: [0,2,3,4,5,6,7],
+                preDefined: {
+                    criteria: [
+                        {
+                            condition: 'contains',
+                            value: 'Published',
+                        },
+                    ]
+                },
+            }
+        });
+        // Add filter button next to the search input
+        $('#card-tools .input-group ').append('<button id="filter-btn" class="dt-button btn dt-btn ml-2">Filter</button>');
+
+        table.buttons().container().appendTo('#card-tools .input-group');
+
+        $('.dataTables_length').appendTo('#card-title');
+
+        $('.dataTables_filter').appendTo('#card-title');
+        $('#myTable_length label').contents().filter(function() {
+            return this.nodeType === Node.TEXT_NODE;
+        }).remove();
+
+        $('.dataTables_filter label').contents().filter(function() {
+            return this.nodeType === Node.TEXT_NODE;
+        }).remove();
+        $('.dataTables_filter input').attr('placeholder', 'Search...');
+
+        $('.dataTables_filter').addClass('input-group').contents().unwrap();
+
+        // Show filter card on button click
+        $('#filter-btn').on('click', function() {
+            $('#filter-card').fadeToggle();
+        });
+
+        // Initialize SearchBuilder
+        table.searchBuilder.container().appendTo('#searchBuilder');
+
+    });
 </script>
 @endsection

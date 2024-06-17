@@ -40,7 +40,7 @@
                             }elseif ($order->status->status =='shipping'){
                                 $status_class = 'bg-warning text-warning-fg';
                             }elseif ($order->status->status =='completed'){
-                                $status_class = 'bg-success text-success-fg';
+                                $status_class = 'bg-info text-info-fg';
                             }elseif ($order->status->status =='processing'){
                                 $status_class = 'bg-warning text-warning-fg bg-secondary';
                             }elseif ($order->status->status =='cancelled'){
@@ -145,11 +145,11 @@
                                         </td>
                                     </tr>
                                     @php
-                                        if ($order->status->status =='pending'){
+                                        if ($order->payment->status =='pending'){
                                             $payment_class = 'bg-warning text-warning-fg bg-secondary';
-                                        }elseif ($order->status->status =='completed'){
+                                        }elseif ($order->payment->status =='completed'){
                                             $payment_class = 'bg-success text-success-fg';
-                                        }elseif ($order->status->status =='failed'){
+                                        }elseif ($order->payment->status =='failed'){
                                             $payment_class = 'bg-danger text-danger-fg';
                                         }else{
                                             $payment_class = 'bg-warning text-warning-fg bg-secondary';

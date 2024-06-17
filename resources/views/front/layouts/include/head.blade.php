@@ -11,7 +11,11 @@
     <!-- SITE TITLE -->
     <title>@yield('title')</title>
     <!-- Favicon Icon -->
-    <link rel="shortcut icon" type="image/x-icon" href="{{asset('front_assets/images/favicon.png')}}">
+    @if(!empty(get_setting('favicon_icon')))
+        <link rel="shortcut icon" type="image/x-icon" href="{{asset('uploads/site/images/'.get_setting('favicon_icon'))}}">
+    @else
+        <link rel="shortcut icon" type="image/x-icon" href="{{asset('/front_assets/images/favicon.png')}}">
+    @endif
     <!-- Animation CSS -->
     <link rel="stylesheet" href="{{asset('front_assets/css/animate.css')}}">
     <!-- Latest Bootstrap min CSS -->

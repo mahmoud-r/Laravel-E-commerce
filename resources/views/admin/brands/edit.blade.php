@@ -62,8 +62,8 @@
                             <div class="mb-3">
                                 <label for="status">status</label>
                                 <select name="status" id="status" class=" form-control"  >
-                                    <option value="1" {{$brand->status == 1 ? 'selected' : ''}} > Active</option>
-                                    <option value="0 " {{$brand->status == 0 ? 'selected' : ''}}> Deactivate</option>
+                                    <option value="1" {{$brand->status == 1 ? 'selected' : ''}} > Publish</option>
+                                    <option value="0 " {{$brand->status == 0 ? 'selected' : ''}}> Draft</option>
                                 </select>
                                 <p></p>
 

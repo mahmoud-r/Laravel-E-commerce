@@ -5,21 +5,30 @@
                 <div class="col-lg-4 col-md-12 col-sm-12">
                     <div class="widget">
                         <div class="footer_logo">
-                            <a href="#"><img src="{{asset('front_assets/images/logo_dark.png')}}" alt="logo"/></a>
+                            <a href="#">
+
+                                @if(!empty(get_setting('store_logo')))
+                                    <div>
+                                        <img src="{{asset('uploads/site/images/'.get_setting('store_logo'))}}" alt="{{get_setting('store_name')}}">
+                                    </div>
+                                @else
+                                    <img src="{{asset('/front_assets/images/logo_dark.png')}}" alt="{{get_setting('store_name')}}">
+                                @endif
+                            </a>
                         </div>
-                        <p class="mb-3">If you are going to use of Lorem Ipsum need to be sure there isn't anything hidden of text</p>
+                        <p class="mb-3">{{ get_setting('store_description')}}</p>
                         <ul class="contact_info">
                             <li>
                                 <i class="ti-location-pin"></i>
-                                <p>123 Street, Old Trafford, NewYork, USA</p>
+                                <p>{{ get_setting('store_address')}}</p>
                             </li>
                             <li>
                                 <i class="ti-email"></i>
-                                <a href="mailto:info@sitename.com">info@sitename.com</a>
+                                <a href="mailto:{{ get_setting('store_email')}}">{{ get_setting('store_email')}}</a>
                             </li>
                             <li>
                                 <i class="ti-mobile"></i>
-                                <p>+ 457 789 789 65</p>
+                                <p>{{ get_setting('store_phone')}}</p>
                             </li>
                         </ul>
                     </div>
