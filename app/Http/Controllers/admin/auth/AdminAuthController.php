@@ -10,7 +10,7 @@ class AdminAuthController extends Controller
 {
     public function login_form()
     {
-        return view('admin.auth.login');
+        return view('admin.auth.nlogin');
     }
 
     public function login_functionality(Request $request){

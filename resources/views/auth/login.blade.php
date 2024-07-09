@@ -36,7 +36,7 @@
                                 <div class="form-group mb-3">
                                     <input id="email" type="text"
                                            class="form-control @error('email') is-invalid @enderror" name="email"
-                                           value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="Your Email or Your Phone ">
+                                           value="{{  old('email')}}" required autocomplete="email" autofocus  placeholder="Your Email or Your Phone ">
 
                                     @error('email')
                                     <span class="invalid-feedback" role="alert">
@@ -46,7 +46,7 @@
                                 </div>
                                 <div class="form-group mb-3">
                                     <input id="password" type="password"
-                                           class="form-control @error('password') is-invalid @enderror" name="password"
+                                           class="form-control @error('password') is-invalid @enderror"  name="password"
                                            required autocomplete="current-password" placeholder="Password">
 
                                     @error('password')
@@ -58,7 +58,7 @@
                                 <div class="login_footer form-group mb-3">
                                     <div class="chek-form">
                                         <div class="custome-checkbox">
-                                            <input class="form-check-input" type="checkbox" name="checkbox"   id="remember" {{ old('remember') ? 'checked' : '' }} >
+                                            <input class="form-check-input" type="checkbox" name="checkbox"    id="remember" {{ old('remember') ? 'checked' : '' }} >
                                             <label class="form-check-label" for="remember"><span> {{ __('Remember Me') }}</span></label>
                                         </div>
                                     </div>
