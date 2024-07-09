@@ -1,5 +1,5 @@
 @php
-    $brands = \App\Models\brand::where(['status'=>'1'])->whereNotNull('image')->latest()->get();
+    $brands = \App\Models\Brand::where(['status'=>'1'])->whereNotNull('image')->latest()->get();
 @endphp
 <section class="section pt-0 small_pb">
     <div class="container">

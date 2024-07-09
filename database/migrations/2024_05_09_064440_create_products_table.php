@@ -28,8 +28,8 @@ return new class extends Migration
             $table->integer('qty')->default(1);
             $table->boolean('status')->default(true);
             $table->text('related_product')->nullable();
-            $table->text('warranty')->nullable()->default('1 Year Warranty');
-            $table->text('return')->nullable()->default('30 Day Return Policy');
+            $table->text('warranty')->nullable()->default(null);
+            $table->text('return')->nullable()->default(null);
             $table->string('seo_title')->nullable();
             $table->text('seo_description')->nullable();
             $table->enum('seo_index',['index','noindex'])->default('index');
