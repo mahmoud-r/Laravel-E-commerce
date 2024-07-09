@@ -30,6 +30,21 @@ class SettingsSeeder extends Seeder
         'email_user_new_review'=>true,
         'email_user_confirm_review'=>true,
         'email_user_new_review_admin'=>true,
+        'email_user_new_contact'=>true,
+        'email_user_new_contact_admin'=>true,
+        'facebook'=>'https://www.facebook.com',
+        'x'=>'https://x.com',
+        'youtube'=>'https://www.youtube.com',
+        'instagram'=>'https://www.instagram.com',
+        'recaptcha_site_key'=>'6Le9egQqAAAAADWMMl9UwfXL-fDJP4El9dIIlE26',
+        'recaptcha_secret'=>'6Le9egQqAAAAAA4WOzC9_DpbPg7p6RHJe_9oCBPr',
+        'facebook_client_id'=>'',
+        'facebook_client_secret'=>'',
+        'facebook_login_status'=>true,
+        'facebook_redirect'=>true,
+        'google_client_id'=>'',
+        'google_client_secret'=>'',
+        'google_login_status'=>true,
     ];
     public function run(): void
     {

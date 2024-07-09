@@ -25,6 +25,9 @@ class User extends Authenticatable
         'phone',
         'status',
         'note',
+        'provider',
+        'provider_id',
+        'avatar',
     ];
 
     /**

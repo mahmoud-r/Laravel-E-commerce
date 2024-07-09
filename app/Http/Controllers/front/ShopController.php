@@ -3,14 +3,18 @@
 namespace App\Http\Controllers\front;
 
 use App\Http\Controllers\Controller;
+use App\Models\Attribute;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductCollection;
 use App\Models\ProductRating;
 use App\Models\SubCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class ShopController extends Controller
 {
@@ -18,7 +22,11 @@ class ShopController extends Controller
 
         $categorySelected = '';
         $subCategorySelected = '';
+        $priceMinSelected =$request->get('price_min');
+        $priceMaxSelected =$request->get('price_max');
         $brandArray =[];
+        $collectionArray =[];
+        $attributeFilters = $request->except(['sort','Showing','search','category','price_max','price_min','collection','page','brand']);
         $sort = $request->get('sort');
         $Showing = $request->get('Showing');
         $searchQuery = $request->get('search');
@@ -35,8 +43,8 @@ class ShopController extends Controller
             ->latest()
             ->get();
 
-        $brands = Brand::where('status',1)->select('id','name');
-        $products = Product::where('status',1);
+        $brands = Brand::where('status',1)->select('id','name','slug');
+        $products = Product::IsActive();
 
         //apply Filter
 
@@ -49,7 +57,8 @@ class ShopController extends Controller
                     $categorySelected= $category->id;
                     $brands_id = $category->products()->distinct('brand_id')->pluck('brand_id');
                     $brands = $brands->whereIn('id', $brands_id);
-                }
+
+         }
 
         // Apply SubCategory Filter
          if (!empty($subCategorySlug)){
@@ -68,20 +77,54 @@ class ShopController extends Controller
                     ->orWhere('description', 'LIKE', "%{$searchQuery}%");
             });
         }
-        // Apply Price Filter
+
+
+        // Apply Attribute Filters
+        if (!empty($attributeFilters)) {
+            $products = $products->where(function ($query) use ($attributeFilters) {
+                foreach ($attributeFilters as $attributeName => $values) {
+                    $valueArray = explode(',', $values);
+                    $query->whereHas('attributeValues', function ($query) use ($attributeName, $valueArray) {
+                        $query->whereHas('attribute', function ($query) use ($attributeName) {
+                            $query->where('slug', $attributeName);
+                        })->whereIn('slug', $valueArray);
+                    });
+                }
+            });
+        }
+
+
+
+        //  Price Filter
         $maxPrice = $products->max('price');
         $minPrice = $products->min('price');
 
+
+        // Apply Brand Filter
         if (!empty($request->get('brand'))){
             $brandArray = explode(',',$request->get('brand'));
-            $products =$products->whereIn('brand_id',$brandArray);
+//            $products =$products->whereIn('brand_id',$brandArray);
+            $products =$products->whereHas('brand',function ($q) use ($brandArray){
+                $q->whereIn('slug',$brandArray);
+            });
         }
 
-        if ($request->get('price_min') != '' && $request->get('price_max') != '' ){
+        // Apply collection Filter
+        if (!empty($request->get('collection'))){
+            $collectionArray = ProductCollection::wherein('slug',explode(',',$request->get('collection')))->pluck('id')->toArray();
+            $products =$products->whereHas('Collections',function ($q) use ($collectionArray){
+                $q->wherein('product_collection_id',$collectionArray);
+            });
+        }
+
+        if ($priceMinSelected != '' && $priceMaxSelected != '' ){
 
             $products =$products->whereBetween('price',[intval($request->get('price_min')),intval($request->get('price_max'))]);
 
         }
+
+
+
 
         // Apply Sorting
         if ($sort){
@@ -112,8 +155,16 @@ class ShopController extends Controller
 
         }
 
+        $attributes = Attribute::whereHas('values.products', function ($query) use ($categorySelected) {
+            $query->where('category_id', $categorySelected);
+        })->with(['values' => function ($query) use ($categorySelected) {
+            $query->whereHas('products', function ($query) use ($categorySelected) {
+                $query->where('category_id', $categorySelected);
+            });
+        }])->get();
 
         $brands = $brands->orderBy('id','DESC')->get();
+        $Collections = ProductCollection::where('status','1')->latest()->get();
 
         return view('front/shop',compact(
             'categoreis',
@@ -126,7 +177,13 @@ class ShopController extends Controller
             'minPrice',
             'sort',
             'Showing',
-            'searchQuery'
+            'searchQuery',
+            'attributes',
+            'attributeFilters',
+            'Collections',
+            'collectionArray',
+            'priceMinSelected',
+            'priceMaxSelected',
 
         ));
     }
@@ -142,9 +199,9 @@ class ShopController extends Controller
         if ($product->related_product){
 
             $productArray = explode(',',$product->related_product);
-            $relatedProducts = Product::whereIn('id',$productArray)->get();
+            $relatedProducts = Product::whereIn('id',$productArray)->IsActive()->get();
         }else{
-            $relatedProducts = Product::where('category_id', $product->category_id)->where('id', '!=', $product->id)->take(6)->get();
+            $relatedProducts = Product::where('category_id', $product->category_id)->where('id', '!=', $product->id)->IsActive()->take(6)->get();
         }
 
 
@@ -177,7 +234,7 @@ class ShopController extends Controller
             return $q->where('title', 'LIKE', "%{$query}%")
                 ->orWhere('description', 'LIKE', "%{$query}%");
         })
-            ->latest()->paginate(12);
+            ->latest()->IsActive()->paginate(12);
 
 
         return view('front.layouts.header.search_results', compact('products','categorySlug','query'))->render();

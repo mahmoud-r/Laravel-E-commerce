@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\front\CartController;
 use App\Http\Controllers\front\CheckoutController;
 use App\Http\Controllers\front\CompareController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\front\ShopController;
 use App\Http\Controllers\front\UserAddressController;
 use App\Http\Controllers\front\UserProfileController;
 use App\Http\Controllers\front\WishlistController;
+use App\Http\Controllers\webhookController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -32,6 +34,10 @@ Route::name('front.')->group(function (){
     Route::get('shop-quick-view/{id}',[ShopController::class,'quickView'])->name('quick-view');
     Route::post('save_rating/{product}',[ShopController::class,'saveRating'])->name('saveRating');
 
+
+    //Newsletter
+    Route::post('/newsletter',[HomeController::class,'storeNewsletter'])->name('storeNewsletter');
+
     //search
     Route::get('/search',[ShopController::class,'search'])->name('search.products');
 
@@ -55,6 +61,11 @@ Route::name('front.')->group(function (){
     Route::post('add_to_wishlist',[WishlistController::class,'addToWishlist'])->name('addToWishlist');
     Route::get('wishlist',[WishlistController::class,'index'])->name('wishlist.index');
 
+    //Static Pages
+    Route::get('/'.!empty(getPageContent('contact')['slug']) ?getPageContent('contact')['slug'] : 'contact-us' ,[HomeController::class,'contactPage'])->name('page.contact');
+    Route::post('/contact',[HomeController::class,'storeContactForm'])->name('storeContactForm');
+    Route::get('/'.!empty(getPageContent('about')['slug']) ?getPageContent('about')['slug'] : 'about-us' ,[HomeController::class,'aboutPage'])->name('page.about');
+    Route::get('/'.!empty(getPageContent('term-condition')['slug']) ?getPageContent('term-condition')['slug'] : 'term-condition' ,[HomeController::class,'termConditionPage'])->name('page.term-condition');
 
     Route::group(['middleware'=>'auth'],function(){
 
@@ -87,13 +98,23 @@ Route::name('front.')->group(function (){
         Route::post('/apply_discount',[CheckoutController::class,'applyDiscount'])->name('applyDiscount');
         Route::post('/remove_coupon',[CheckoutController::class,'RemoveCoupon'])->name('RemoveCoupon');
         Route::get('/order_completed/{order}',[CheckoutController::class,'orderCompleted'])->name('orderCompleted');
+        Route::get('/payment-success/{order}', [CheckoutController::class, 'paymentSuccess'])->name('payment.success');
+        Route::get('/payment-cancel/{order}', [CheckoutController::class, 'paymentCancel'])->name('payment.cancel');
+        Route::get('/payment/paypal/success/{order}', [CheckoutController::class, 'paymentPayPalSuccess'])->name('payment.paypal.success');
+        Route::get('/payment/paypal/cancel/{order}', [CheckoutController::class, 'paymentPayPalCancel'])->name('payment.paypal.cancel');
 
 
     });
+    Route::post('/payment/stripe/webhook', [webhookController::class, 'handel'])->name('webhook');
 
 });
 
 
 
 Auth::routes();
+Route::get('auth/google', [SocialiteController::class, 'redirectToGoogle'])->name('redirectToGoogle');
+Route::get('auth/google/callback', [SocialiteController::class, 'handleGoogleCallback'])->name('handleGoogleCallback');
+
+Route::get('auth/facebook', [SocialiteController::class, 'redirectToFacebook'])->name('redirectToFacebook');
+Route::get('auth/facebook/callback', [SocialiteController::class, 'handleFacebookCallback'])->name('handleFacebookCallback');
 

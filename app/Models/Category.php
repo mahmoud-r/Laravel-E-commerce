@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 class Category extends Model
 {
     use HasFactory;
-    protected $fillable=['name','slug','image','status','showHome'];
+    protected $fillable=['name','slug','image','status','showHome','sort'];
 
 
 
@@ -19,6 +19,13 @@ class Category extends Model
 
     public function products(){
         return $this->hasMany(Product::class,'category_id','id');
+    }
+
+
+
+    public function attributes()
+    {
+        return $this->hasMany(Attribute::class,'category_id');
     }
 
 }

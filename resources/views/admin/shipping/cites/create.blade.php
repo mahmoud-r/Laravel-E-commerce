@@ -1,4 +1,5 @@
 @extends('admin.master')
+@section('title')Cities - Create@endsection
 
 @section('style')
     <style>
@@ -7,6 +8,7 @@
         }
     </style>
 @endsection
+@section('title')Cities - Create @endsection
 
 @section('breadcrumb')
     <li class="breadcrumb-item "><a href="{{route('dashboard')}}">Dashboard</a></li>

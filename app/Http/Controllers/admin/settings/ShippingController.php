@@ -12,7 +12,14 @@ use Illuminate\Support\Facades\DB;
 
 class ShippingController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('permission:shipping-list|shipping-create|shipping-edit|shipping-delete', ['only' => ['index'] ]);
+        $this->middleware('permission:shipping-create', ['only' => ['create','store']]);
+        $this->middleware('permission:shipping-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:shipping-delete', ['only' => ['destroy']]);
 
+    }
     public function index(){
 
         $zones = ShippingZone::get();

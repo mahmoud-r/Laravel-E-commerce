@@ -2,6 +2,7 @@
 
 namespace App\Http\Traits;
 
+use App\Models\DiscountCoupon;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
@@ -16,9 +17,15 @@ trait CouponTrait
             return ['status' => false, 'msg' => 'No coupon applied.'];
         }
 
-        $code = Session::get('code');
+        $codeRequest = Session::get('code');
+        $code = DiscountCoupon::find($codeRequest->id);
+
         $now = Carbon::now();
 
+        if (!$code){
+            Session::forget('code');
+            return ['status' => false, 'msg' => 'Discount coupon has expired.'];
+        }
         if ($code->status == 0) {
             Session::forget('code');
             return ['status' => false, 'msg' => 'Invalid discount Coupon.'];
@@ -29,7 +36,7 @@ trait CouponTrait
 
             if ($now->lt($startDate)) {
                 Session::forget('code');
-                return ['status' => false, 'msg' => 'Discount coupon is not valid yet.'];
+                return ['status' => false, 'msg' => 'Discount coupon is not valid.'];
             }
         }
 
@@ -66,6 +73,7 @@ trait CouponTrait
             Session::forget('code');
             return ['status' => false, 'msg' => 'The minimum amount must be $' . $code->min_amount];
         }
+
 
         return ['status' => true];
     }

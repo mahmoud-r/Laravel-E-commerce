@@ -1,5 +1,7 @@
 @extends('admin.master')
 
+@section('title')Settings @endsection
+
 @section('breadcrumb')
     <li class="breadcrumb-item active"><a href="{{route('dashboard')}}">Dashboard</a></li>
     <li class="breadcrumb-item active">Settings</li>
@@ -60,7 +62,8 @@
 
             <div class="card-body">
                 <div class="row g-3">
-                    <div class="col-12 col-sm-6 col-md-4 panel-section-item mt-3">
+                    @can('settings-general')
+                      <div class="col-12 col-sm-6 col-md-4 panel-section-item mt-3">
                         <div class="row g-3 align-items-start">
                             <div class="col-auto">
                                 <div class="d-flex align-items-center justify-content-center panel-section-item-icon">
@@ -83,6 +86,38 @@
                             </div>
                         </div>
                     </div>
+                    @endcan
+
+                     @can('settings-payment-methods')
+                      <div class="col-12 col-sm-6 col-md-4 panel-section-item mt-3">
+                        <div class="row g-3 align-items-start">
+                            <div class="col-auto">
+                                <div class="d-flex align-items-center justify-content-center panel-section-item-icon">
+                                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                        <path d="M3 5m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z"></path>
+                                        <path d="M3 10l18 0"></path>
+                                        <path d="M7 15l.01 0"></path>
+                                        <path d="M11 15l2 0"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="d-block mb-1 panel-section-item-title">
+                                    <a class="text-decoration-none text-primary fw-bold" href="{{route('payment_methods.index')}}">
+
+                                        Payment Methods
+
+                                    </a>
+                                </div>
+
+                                <div class="text-secondary mt-n1">View and update your Payment Methods.</div>
+                            </div>
+                        </div>
+                    </div>
+                     @endcan
+
+                     @can('settings-email')
                     <div  class="col-12 col-sm-6 col-md-4 panel-section-item mt-3">
                         <div class="row g-3 align-items-start">
                             <div class="col-auto">
@@ -105,6 +140,92 @@
                             </div>
                         </div>
                     </div>
+                    @endcan
+
+                     @can('settings-social')
+                    <div  class="col-12 col-sm-6 col-md-4 panel-section-item mt-3">
+                        <div class="row g-3 align-items-start">
+                            <div class="col-auto">
+                                <div class="d-flex align-items-center justify-content-center panel-section-item-icon">
+                                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                        <path d="M12 5m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+                                        <path d="M5 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+                                        <path d="M19 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+                                        <path d="M12 14m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+                                        <path d="M12 7l0 4"></path>
+                                        <path d="M6.7 17.8l2.8 -2"></path>
+                                        <path d="M17.3 17.8l-2.8 -2"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="d-block mb-1 panel-section-item-title">
+                                    <a class="text-decoration-none text-primary fw-bold" href="{{route('settings.social')}}">
+                                        Social links
+                                    </a>
+                                </div>
+
+                                <div class="text-secondary mt-n1">View and update your Social links.</div>
+                            </div>
+                        </div>
+                    </div>
+                    @endcan
+
+                     @can('settings-social-login')
+                    <div  class="col-12 col-sm-6 col-md-4 panel-section-item mt-3">
+                        <div class="row g-3 align-items-start">
+                            <div class="col-auto">
+                                <div class="d-flex align-items-center justify-content-center panel-section-item-icon">
+                                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                        <path d="M12 5m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+                                        <path d="M5 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+                                        <path d="M19 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+                                        <path d="M12 14m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+                                        <path d="M12 7l0 4"></path>
+                                        <path d="M6.7 17.8l2.8 -2"></path>
+                                        <path d="M17.3 17.8l-2.8 -2"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="d-block mb-1 panel-section-item-title">
+                                    <a class="text-decoration-none text-primary fw-bold" href="{{route('settings.social_login')}}">
+                                        Social Login
+                                    </a>
+                                </div>
+
+                                <div class="text-secondary mt-n1">Enable and update your Social Login.</div>
+                            </div>
+                        </div>
+                    </div>
+                     @endcan
+
+                     @can('settings-recaptcha')
+                    <div  class="col-12 col-sm-6 col-md-4 panel-section-item mt-3">
+                        <div class="row g-3 align-items-start">
+                            <div class="col-auto">
+                                <div class="d-flex align-items-center justify-content-center panel-section-item-icon">
+                                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                        <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4"></path>
+                                        <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="d-block mb-1 panel-section-item-title">
+                                    <a class="text-decoration-none text-primary fw-bold" href="{{route('settings.recaptcha')}}">
+                                        Recaptcha
+                                    </a>
+                                </div>
+
+                                <div class="text-secondary mt-n1">View and update your Recaptcha v3 Api.</div>
+                            </div>
+                        </div>
+                    </div>
+                    @endcan
 
                 </div>
             </div>

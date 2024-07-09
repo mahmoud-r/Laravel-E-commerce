@@ -41,10 +41,10 @@
                 <div class="product_description">
                     <h4 class="product_title"><a href="#">{{$product->title}}</a></h4>
                     <div class="product_price">
-                        <span class="price">{{$product->price}}</span>
+                        <span class="price">{{$product->price}} EGP</span>
 
                         @if(!empty($product->compare_price && $product->compare_price > $product->price))
-                            <del>${{$product->compare_price}}</del>
+                            <del>{{$product->compare_price}} EGP</del>
                             <div class="on_sale">
                                 <span>{{$product->discountPercentage()}}% Off</span>
                             </div>
@@ -56,6 +56,7 @@
                         </div>
                         <span class="rating_num">({{$product->rating_count}})</span>
                     </div>
+                    <div class="clearfix"></div>
                     <div class="pr_desc">
                         <p>
                             {!! $product->short_description !!}
@@ -102,11 +103,11 @@
                 <div class="product_share">
                     <span>Share:</span>
                     <ul class="social_icons">
-                        <li><a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(Request::fullUrl()) }}"><i class="ion-social-facebook"></i></a></li>
-                        <li><a href="#"><i class="ion-social-twitter"></i></a></li>
-                        <li><a href="#"><i class="ion-social-googleplus"></i></a></li>
-                        <li><a href="#"><i class="ion-social-youtube-outline"></i></a></li>
-                        <li><a href="#"><i class="ion-social-instagram-outline"></i></a></li>
+                        <li><a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(Request::fullUrl()) }}" target="_blank"><i class="ion-social-facebook"></i></a></li>
+                        <li><a href="https://twitter.com/intent/tweet?url={{ urlencode(Request::fullUrl()) }}&text={{ urlencode($product->title) }}" target="_blank"><i class="ion-social-twitter"></i></a></li>
+                        <li><a href="https://www.linkedin.com/shareArticle?mini=true&url={{ urlencode(Request::fullUrl()) }}&title={{ urlencode($product->title) }}" target="_blank"><i class="ion-social-linkedin"></i></a></li>
+                        <li><a href="https://pinterest.com/pin/create/button/?url={{ urlencode(Request::fullUrl()) }}&media={{ urlencode($product->image_url) }}&description={{ urlencode($product->title) }}" target="_blank"><i class="ion-social-pinterest"></i></a></li>
+                        <li><a href="https://api.whatsapp.com/send?text={{ urlencode(Request::fullUrl()) }}" target="_blank"><i class="ion-social-whatsapp"></i></a></li>
                     </ul>
                 </div>
             </div>

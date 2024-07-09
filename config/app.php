@@ -188,6 +188,9 @@ return [
          */
         Vinkla\Hashids\HashidsServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
+        Laravel\Socialite\SocialiteServiceProvider::class,
+
+
 
         /*
          * Application Service Providers...
@@ -215,6 +218,7 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
         'Hashids' => Vinkla\Hashids\Facades\Hashids::class,
+
     ])->toArray(),
 
 ];

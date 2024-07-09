@@ -1,5 +1,8 @@
 @include('admin.lauout.import.head')
 
+
+@section('title')Login @endsection
+
 <body class="hold-transition login-page">
 
 <div class="login-box">

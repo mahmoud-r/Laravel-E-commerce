@@ -155,7 +155,7 @@
                                             <span class="product-title">{{$item->name}}</span>
                                             <span class="product-qty">x {{$item->qty}}</span>
                                         </td>
-                                        <td>${{$item->total}}</td>
+                                        <td>{{$item->total}} EGP</td>
                                     </tr>
                                     @endforeach
                                     </tbody>
@@ -163,7 +163,7 @@
                                     <tfoot>
                                     <tr>
                                         <th>SubTotal</th>
-                                        <td class="product-subtotal">${{Cart::subtotal(2,'.','')}}</td>
+                                        <td class="product-subtotal">{{Cart::subtotal(2,'.','')}} EGP</td>
                                     </tr>
                                     <tr>
                                         <th>Discount</th>
@@ -175,7 +175,7 @@
                                     </tr>
                                     <tr>
                                         <th>Total</th>
-                                        <td class="product-subtotal" id="grand_total">${{Cart::total(2,'.','')}}</td>
+                                        <td class="product-subtotal" id="grand_total">{{Cart::total(2,'.','')}} EGP</td>
                                     </tr>
                                     </tfoot>
                                 </table>
@@ -460,9 +460,9 @@
             dataType:'json',
             success:function (response){
                 if(response.status == true){
-                    $('#total_shipping').html('$'+response.total_shipping)
-                    $('#grand_total').html('$'+response.grand_total)
-                    $('#Discount').html('$'+response.discount)
+                    $('#total_shipping').html(response.total_shipping + ' EGP')
+                    $('#grand_total').html(response.grand_total + ' EGP')
+                    $('#Discount').html(response.discount + ' EGP')
 
                 }
             }
@@ -482,11 +482,11 @@
             success:function (response){
                 if(response.status == true){
                     $('#discount_error').removeClass('invalid-feedback').html('');
-                    $('#total_shipping').html('$'+response.total_shipping)
-                    $('#grand_total').html('$'+response.grand_total)
-                    $('#Discount').html('$'+response.discount)
+                    $('#total_shipping').html(response.total_shipping + ' EGP')
+                    $('#grand_total').html(response.grand_total + ' EGP')
+                    $('#Discount').html(response.discount + ' EGP')
                     $('#discount_code').val('')
-                    $('#response_coupon').html(response.discountString)
+                    $('#response_coupon').html(response.discountString )
 
                     Toast.fire({
                         icon: 'success',
@@ -513,9 +513,9 @@
             dataType:'json',
             success:function (response){
                 if(response.status == true){
-                    $('#total_shipping').html('$'+response.total_shipping)
-                    $('#grand_total').html('$'+response.grand_total)
-                    $('#Discount').html('$'+response.discount)
+                    $('#total_shipping').html(response.total_shipping + ' EGP')
+                    $('#grand_total').html(response.grand_total + ' EGP')
+                    $('#Discount').html(response.discount + ' EGP')
                     $('#response_coupon').html('')
                 }
             }

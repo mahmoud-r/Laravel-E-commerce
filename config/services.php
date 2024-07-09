@@ -31,4 +31,35 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'stripe' => [
+        'key' => env('STRIPE_KEY'),
+        'secret' => env('STRIPE_SECRET'),
+        'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
+    ],
+    'paypal' => [
+        'client_id' => env('PAYPAL_CLIENT_ID'),
+        'secret' => env('PAYPAL_SECRET'),
+        'settings' => [
+            'mode' => env('PAYPAL_MODE'),
+            'http.ConnectionTimeOut' => 30,
+            'log.LogEnabled' => true,
+            'log.FileName' => storage_path('/logs/paypal.log'),
+            'log.LogLevel' => 'FINE',
+        ],
+    ],
+
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT'),
+        'status' => env('GOOGLE_STATUS'),
+
+    ],
+
+    'facebook' => [
+        'client_id' => env('FACEBOOK_CLIENT_ID'),
+        'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
+        'redirect' => env('FACEBOOK_REDIRECT'),
+        'status' => env('FACEBOOK_STATUS'),
+    ],
 ];

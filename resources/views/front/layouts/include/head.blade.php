@@ -2,14 +2,29 @@
     <!-- Meta -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta content="Anil z" name="author">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Shopwise is Powerful features and You Can Use The Perfect Build this Template For Any eCommerce Website. The template is built for sell Fashion Products, Shoes, Bags, Cosmetics, Clothes, Sunglasses, Furniture, Kids Products, Electronics, Stationery Products and Sporting Goods.">
-    <meta name="keywords" content="ecommerce, electronics store, Fashion store, furniture store,  bootstrap 4, clean, minimal, modern, online store, responsive, retail, shopping, ecommerce store">
+    <meta name="robots" content="@yield('meta_index', "index")">
+
+    <title>@yield('title', config('settings.store_name'))</title>
+    <meta name="description" content="@yield('meta_description', config('settings.store_description'))">
+
+    <link rel="canonical" href="@yield('canonical', url()->current())">
+
+    <meta property="og:type" content="@yield('og_type', 'website')">
+    <meta property="og:title" content="@yield('og_title', config('settings.store_name'))">
+    <meta property="og:site_name" content="@yield('og_title', config('settings.store_name'))">
+    <meta property="og:description" content="@yield('og_description', config('settings.store_description'))">
+    <meta property="og:image" content="@yield('og_image',config('settings.store_logo') ? asset('uploads/site/images/'.get_setting('store_logo')) : asset('/front_assets/images/logo_dark.png'))">
+    <meta property="og:url" content="@yield('og_url', url()->current())">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@yield('twitter_title', config('settings.store_name'))">
+    <meta name="twitter:description" content="@yield('twitter_description', config('settings.store_description'))">
+    <meta name="twitter:image" content="@yield('twitter_image',config('settings.store_logo') ? asset('uploads/site/images/'.get_setting('store_logo')) : asset('/front_assets/images/logo_dark.png'))">
+
+    @yield('meta')
     <meta name="csrf-token" content="{{csrf_token()}}">
 
-    <!-- SITE TITLE -->
-    <title>@yield('title')</title>
     <!-- Favicon Icon -->
     @if(!empty(get_setting('favicon_icon')))
         <link rel="shortcut icon" type="image/x-icon" href="{{asset('uploads/site/images/'.get_setting('favicon_icon'))}}">

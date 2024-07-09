@@ -111,7 +111,7 @@
                                                         @endphp
                                                         <span class="badge {{$payment_class}}">{{$order->payment->status}}</span>
                                                     </td>
-                                                    <td>${{number_format($order->grand_total,0)}}</td>
+                                                    <td>{{number_format($order->grand_total,0)}} EGP</td>
                                                     <td><a href="{{route('front.showOrder',$order->getRouteKey())}}" class="btn btn-fill-out btn-sm">View</a></td>
                                                 </tr>
                                             @endforeach

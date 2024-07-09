@@ -9,8 +9,14 @@ use Illuminate\Http\Request;
 class PaymentMethodController extends Controller
 {
 
+    function __construct()
+    {
+        $this->middleware('permission:settings-payment-methods', ['only' => ['index','update','updateStatus','updatePaymentMethod'] ]);
+
+    }
     public function index()
     {
+
         $stripeSettings = PaymentMethod::getSettings('stripe');
         $paypalSettings = PaymentMethod::getSettings('paypal');
         $codSettings = PaymentMethod::getSettings('cod');

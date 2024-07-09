@@ -2,7 +2,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{csrf_token()}}">
-    <title>Dashboard ::@yield('title')</title>
+    <title>@yield('title','Dashboard') | {{config('settings.store_name')}}</title>
 
     @if(!empty(get_setting('favicon_icon')))
             <link rel="shortcut icon" type="image/x-icon" href="{{asset('uploads/site/images/'.get_setting('favicon_icon'))}}">

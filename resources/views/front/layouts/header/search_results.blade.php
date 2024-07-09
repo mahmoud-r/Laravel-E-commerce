@@ -29,9 +29,9 @@
                             <span class="rating_num">(10)</span>
                         </div>
                         <div class="product_price">
-                            <span class="price">${{number_format($product->price,2)}}</span>
+                            <span class="price">{{number_format($product->price,2)}} EGP</span>
                             @if(!empty($product->compare_price && $product->compare_price > $product->price && $product->qty > 0))
-                                <del>${{$product->compare_price}}</del>
+                                <del>{{$product->compare_price}} EGP</del>
                                 <div class="on_sale">
                                     <span>{{$product->discountPercentage()}}% Off</span>
                                 </div>

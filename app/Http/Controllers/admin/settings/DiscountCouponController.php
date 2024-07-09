@@ -10,7 +10,14 @@ use Illuminate\Http\Request;
 
 class DiscountCouponController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('permission:discount-list|discount-create|discount-edit|discount-delete', ['only' => ['index'] ]);
+        $this->middleware('permission:discount-create', ['only' => ['create','store']]);
+        $this->middleware('permission:discount-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:discount-delete', ['only' => ['destroy']]);
 
+    }
     public function index(Request $request)
     {
         $Coupons = DiscountCoupon::latest();

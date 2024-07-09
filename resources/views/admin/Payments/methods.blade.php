@@ -1,7 +1,11 @@
 @extends('admin.master')
 
+@section('title')Settings - Payment methods @endsection
+
 @section('breadcrumb')
     <li class="breadcrumb-item "><a href="{{route('dashboard')}}">Dashboard</a></li>
+    <li class="breadcrumb-item "><a href="{{route('settings.index')}}">Settings</a></li>
+
     <li class="breadcrumb-item active">Payment methods</li>
 @endsection
 @section('style')
@@ -272,10 +276,10 @@
 
                                             <div class="mb-3 position-relative">
 
-                                                <input type="hidden" name="payment_paypal_mode" value="0">
+                                                <input type="hidden" name="payment_paypal_mode" value="sandbox">
 
                                                 <label class="form-check">
-                                                    <input type="checkbox"  name="payment_paypal_mode" class="form-check-input" value="1" {{$paypalSettings['payment_paypal_mode'] == 1 ?'checked':''}}>
+                                                    <input type="checkbox"  name="payment_paypal_mode" class="form-check-input" value="live" {{$paypalSettings['payment_paypal_mode'] == 'live' ?'checked':''}}>
 
                                                     <span class="form-check-label">Live mode </span>
                                                 </label>

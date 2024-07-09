@@ -9,12 +9,17 @@
         "guzzlehttp/guzzle": "^7.2",
         "hardevine/shoppingcart": "^3.3",
         "intervention/image": "^3.5",
+        "josiasmontag/laravel-recaptchav3": "^1.0",
         "laravel/framework": "^10.0",
         "laravel/sanctum": "^3.2",
+        "laravel/socialite": "^5.15",
         "laravel/tinker": "^2.8",
         "laravel/ui": "^4.5",
         "propaganistas/laravel-phone": "^5.3",
         "spatie/laravel-permission": "^6.7",
+        "spatie/laravel-sitemap": "^7.2",
+        "srmklive/paypal": "~3.0",
+        "stripe/stripe-php": "^15.0",
         "vinkla/hashids": "^11.0"
     },
     "require-dev": {

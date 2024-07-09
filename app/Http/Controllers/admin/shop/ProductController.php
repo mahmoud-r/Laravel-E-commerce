@@ -3,25 +3,42 @@
 namespace App\Http\Controllers\admin\shop;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreAttributeRequest;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Http\Traits\ImageTrait;
+use App\Models\Attribute;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Order_item;
 use App\Models\Product;
 use App\Models\Product_Image;
+use App\Models\ProductAttribute;
+use App\Models\ProductCollection;
 use App\Models\SubCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\ImageManager;
+use function PHPUnit\Framework\isNull;
 
 class ProductController extends Controller
 {
     use ImageTrait;
+
+    function __construct()
+    {
+        $this->middleware('permission:product-list|product-create|product-edit|product-delete', ['only' => ['index','getAll','getProducts','get_sub_categories','edit'] ]);
+        $this->middleware('permission:product-create', ['only' => ['create','store','storeAttribute','storeAttributeValue']]);
+        $this->middleware('permission:product-edit', ['only' => ['update','storeAttribute','storeAttributeValue','updateImages','deleteImages']]);
+        $this->middleware('permission:product-delete', ['only' => ['destroy']]);
+
+
+    }
+
     public function index()
     {
         return view('admin/products/index');
@@ -38,62 +55,148 @@ class ProductController extends Controller
     {
         $categories = Category::select('name','id')->orderBy('name','ASC')->get();
         $brands = Brand::select('name','id')->orderBy('name','ASC')->get();
+        $collections =ProductCollection::where('status','1')->get();
 
-        return view('admin/products/create',compact('categories','brands'));
+        return view('admin/products/create',compact('categories','brands','collections'));
     }
+
 
     public function store(StoreProductRequest $request)
     {
         $slug = Str::slug($request->slug);
 
-        $product =Product::create([
-            'title'=>$request->title,
-            'description'=>$request->description,
-            'short_description'=>$request->short_description,
-            'slug'=>$slug,
-            'price'=>$request->price,
-            'compare_price'=>$request->compare_price,
-            'category_id'=>$request->category_id,
-            'sub_category_id'=>$request->sub_category_id,
-            'brand_id'=>$request->brand_id,
-            'is_featured'=>$request->is_featured,
-            'sku'=>$request->sku,
-            'weight'=>$request->weight,
-            'max_order'=>$request->max_order,
-            'qty'=>$request->qty,
-            'status'=>$request->status,
-            'warranty'=>$request->warranty,
-            'return'=>$request->return,
-            'cachDelivery'=>$request->cachDelivery,
-            'related_product'=>(!empty($request->relatedProducts))?implode(',',$request->relatedProducts):'',
+        DB::beginTransaction();
 
-        ]);
+        try {
 
-        //save images
-        if (!empty($request->images_array)){
-            foreach ($request->images_array as $temp_image_id){
+            $product =Product::create([
+                'title'=>$request->title,
+                'description'=>$request->description,
+                'short_description'=>$request->short_description,
+                'slug'=>$slug,
+                'price'=>$request->price,
+                'compare_price'=>$request->compare_price,
+                'category_id'=>$request->category_id,
+                'sub_category_id'=>$request->sub_category_id,
+                'brand_id'=>$request->brand_id,
+                'sku'=>$request->sku,
+                'weight'=>$request->weight,
+                'max_order'=>$request->max_order,
+                'qty'=>$request->qty,
+                'status'=>$request->status,
+                'warranty'=>$request->warranty,
+                'return'=>$request->return,
+                'seo_title'=>$request->seo_title,
+                'seo_description'=>$request->seo_description,
+                'seo_index'=>$request->seo_index,
+                'flash_sale_price'=>$request->flash_sale_price,
+                'flash_sale_expiry_date'=>$request->flash_sale_expiry_date,
+                'flash_sale_qty'=>$request->flash_sale_qty,
+                'flash_sale_qty_solid'=>$request->flash_sale_qty_solid,
+                'related_product'=>(!empty($request->relatedProducts))?implode(',',$request->relatedProducts):'',
 
-                $Product_Image=new Product_Image();
-                $Product_Image->product_id = $product->id;
-                $Product_Image->image = null;
-                $Product_Image->save();
+            ]);
 
-
-                $imageName = $product->id.'-'.$Product_Image->id;
-
-                $newImageName = $this->saveImage($temp_image_id,$imageName,'products',1400);
-                $this->saveThumbnail('products', $newImageName, 300);
-
-                $Product_Image->image = $newImageName;
-                $Product_Image->save();
+            if ($request->has('attributes')) {
+                foreach ($request->input('attributes') as $attributeId => $valueId) {
+                    if ($valueId) {
+                        ProductAttribute::create([
+                            'product_id' => $product->id,
+                            'attribute_id' => $attributeId,
+                            'attribute_value_id' => $valueId,
+                        ]);
+                    }
+                }
             }
+
+            $product->Collections()->sync($request->product_collections);
+
+
+            //save images
+            if (!empty($request->images_array)){
+                foreach ($request->images_array as $temp_image_id){
+
+                    $Product_Image=new Product_Image();
+                    $Product_Image->product_id = $product->id;
+                    $Product_Image->image = null;
+                    $Product_Image->save();
+
+
+                    $imageName = $product->id.'-'.$Product_Image->id;
+
+                    $newImageName = $this->saveImage($temp_image_id,$imageName,'products',1400);
+                    $this->saveThumbnail('products', $newImageName, 300);
+
+                    $Product_Image->image = $newImageName;
+                    $Product_Image->save();
+                }
+            }
+
+
+
+            DB::commit();
+
+            Session()->flash('success','Product Created Successfully');
+
+            return response()->json([
+                'status' => true,
+                'msg'=>'Product Created Successfully'
+            ]);
+
+        }catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'msg' => 'There was an error creating the product: ' . $e->getMessage(),
+            ], 500);
         }
 
-        Session()->flash('success','Product Created Successfully');
+
+
+    }
+
+    public function storeAttribute(StoreAttributeRequest $request)
+    {
+        $slug= Str::slug($request->name);
+
+        $attribute = Attribute::create([
+            'name' =>$request->name,
+            'category_id'=>$request->category_id,
+            'slug'=>$slug
+        ]);
+        if ($request->has('values')) {
+            foreach ($request->input('values') as $value) {
+                $attribute->values()->create(['value' => $value,'slug'=>Str::slug($value)]);
+            }
+        }
+        $attributesCount = Attribute::where('category_id',$request->category_id)->count();
+        $html = view('admin.products.models.NewAttributeResult',compact('attribute','attributesCount'))->render();
+        return response()->json([
+            'status' =>true,
+            'msg'=>'Attribute Created Successfully',
+            'id'=>$attribute->id,
+            'html'=>$html
+        ]);
+    }
+
+    public function storeAttributeValue(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+           'attributeId' =>'required|exists:attributes,id',
+            'value' => 'string|max:255'
+        ]);
+
+        $attribute = Attribute::findOrFail($request->attributeId);
+
+        $slug= Str::slug($request->value);
+        $value = $attribute->values()->create(['value' => $request->value,'slug'=>$slug]);
+
 
         return response()->json([
-            'status' => true,
-            'msg'=>'Product Created Successfully'
+            'status' =>true,
+            'msg'=>'Value Created Successfully',
+            'attribute'=>$attribute->id,
+            'value'=>$value,
         ]);
     }
 
@@ -103,23 +206,28 @@ class ProductController extends Controller
 
         $categories = Category::select('name','id')->orderBy('name','ASC')->get();
 
+        $attributes = $product->category->attributes;
+
         $brands = brand::select('name','id')->orderBy('name','ASC')->get();
 
         $subCategories = SubCategory::where('category_id',$product->category_id)
             ->select('name','id')->orderBy('name','ASC')->get();
 
+        $collections =ProductCollection::where('status','1')->get();
         $relatedProduct = [];
         if ($product->related_product){
-
             $productArray = explode(',',$product->related_product);
             $relatedProduct = Product::select('title','id')->whereIn('id',$productArray)->get();
         }
+
         return(view('admin/products/edit',compact(
             'product',
             'categories',
             'brands',
             'subCategories',
-            'relatedProduct'
+            'relatedProduct',
+            'attributes',
+            'collections'
         )));
     }
 
@@ -127,43 +235,76 @@ class ProductController extends Controller
     public function update(UpdateProductRequest $request, $id)
     {
         $product = Product::findOrFail($id);
-
         $slug = Str::slug($request->slug);
+        DB::beginTransaction();
 
-        $product->update([
-            'title'=>$request->title,
-            'description'=>$request->description,
-            'short_description'=>$request->short_description,
-            'slug'=>$slug,
-            'price'=>$request->price,
-            'compare_price'=>$request->compare_price,
-            'category_id'=>$request->category_id,
-            'sub_category_id'=>$request->sub_category_id,
-            'brand_id'=>$request->brand_id,
-            'is_featured'=>$request->is_featured,
-            'sku'=>$request->sku,
-            'weight'=>$request->weight,
-            'max_order'=>$request->max_order,
-            'qty'=>$request->qty,
-            'status'=>$request->status,
-            'warranty'=>$request->warranty,
-            'return'=>$request->return,
-            'cachDelivery'=>$request->cachDelivery,
-            'related_product'=>(!empty($request->relatedProducts))?implode(',',$request->relatedProducts):'',
-        ]);
+        try {
+            $product->update([
+                'title'=>$request->title,
+                'description'=>$request->description,
+                'short_description'=>$request->short_description,
+                'slug'=>$slug,
+                'price'=>$request->price,
+                'compare_price'=>$request->compare_price,
+                'category_id'=>$request->category_id,
+                'sub_category_id'=>$request->sub_category_id,
+                'brand_id'=>$request->brand_id,
+                'sku'=>$request->sku,
+                'weight'=>$request->weight,
+                'max_order'=>$request->max_order,
+                'qty'=>$request->qty,
+                'status'=>$request->status,
+                'warranty'=>$request->warranty,
+                'return'=>$request->return,
+                'seo_title'=>$request->seo_title,
+                'seo_description'=>$request->seo_description,
+                'seo_index'=>$request->seo_index,
+                'flash_sale_price'=>$request->flash_sale_price,
+                'flash_sale_expiry_date'=>$request->flash_sale_expiry_date,
+                'flash_sale_qty'=>$request->flash_sale_qty,
+                'flash_sale_qty_solid'=>$request->flash_sale_qty_solid,
+                'related_product'=>(!empty($request->relatedProducts))?implode(',',$request->relatedProducts):'',
+            ]);
 
-        Session()->flash('success','Product Updated Successfully');
+            $product->productAttributes()->delete();
 
-        return response()->json([
-            'status' => true,
-            'msg'=>'Product Updated Successfully'
-        ]);
+            if ($request->has('attributes')) {
+                foreach ($request->input('attributes') as $attributeId => $valueId) {
+                    if ($valueId) {
+                        ProductAttribute::create([
+                            'product_id' => $product->id,
+                            'attribute_id' => $attributeId,
+                            'attribute_value_id' => $valueId,
+                        ]);
+                    }
+                }
+            }
+
+            $product->Collections()->sync($request->product_collections);
+
+
+            DB::commit();
+            Session()->flash('success','Product Updated Successfully');
+
+            return response()->json([
+                'status' => true,
+                'msg'=>'Product Updated Successfully'
+            ]);
+
+        }catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'msg' => 'Failed to update product',
+                'error' => $e->getMessage()
+            ]);
+        }
 
     }
 
     public function updateImages(Request $request){
         $validator = Validator::make($request->all(), [
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -184,7 +325,7 @@ class ProductController extends Controller
                 $productImage->image = null;
                 $productImage->save();
 
-                $imageName =$request->product_id.'-'.$productImage->id.'-'.time().'.'.$ext;
+                $imageName =$request->product_id.'-'.$productImage->id.'-'.time().'.webp';
 
                 $productImage->image = $imageName;
 
@@ -196,19 +337,21 @@ class ProductController extends Controller
                     $manager = new ImageManager(new Driver());
                     $image = $manager->read( $sourcePath);
                     $image->scaleDown(1400);
+                    $image->toWebp();
                     $image->save($dPath);
 
 
                     //Generate Image Thumbnail
                     $dPath = public_path().'/uploads/products/images/thumb/'.$imageName;
                     $image->resizeDown(300,300);
+                    $image =  $image->toWebp();
                     $image->save($dPath);
 
 
                     return response()->json([
                         'status' => true,
                         'image_id' => $productImage->id,
-                        'ImagePath' => asset('/uploads/products/images/thumb/'.$productImage->image),
+                        'ImagePath' => asset('/uploads/products/images/'.$productImage->image),
                         'msg' => 'Image uploaded successfully'
                     ]);
                 } else {
@@ -292,8 +435,6 @@ class ProductController extends Controller
 
     }
 
-
-
     public function get_sub_categories(Request $request){
 
         if (!empty($request->category_id)){
@@ -314,7 +455,6 @@ class ProductController extends Controller
 
     }
 
-
     public function getProducts(Request $request){
         $tempProducts=[];
 
@@ -323,7 +463,9 @@ class ProductController extends Controller
 
             if ($products != null){
                 foreach ($products as $product){
-                    $tempProducts[]=array('id'=>$product->id,'text'=>$product->title);
+                    $img = !empty($product->images->first()) ? asset('uploads/products/images/thumb/'.$product->images->first()->image):  asset('front_assets/images/empty-img.png');
+
+                    $tempProducts[]=array('id'=>$product->id,'text'=>$product->title,'img'=>$img);
                 }
             }
         }
@@ -332,4 +474,6 @@ class ProductController extends Controller
             'status'=>true
         ]);
     }
+
+
 }

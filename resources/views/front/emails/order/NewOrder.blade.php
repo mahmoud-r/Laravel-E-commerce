@@ -38,10 +38,10 @@
                 <td class="text-center">
                     <strong>{{$item->qty}}</strong>
                     <span>×</span>
-                    <strong>${{number_format($item->price,2)}}</strong>
+                    <strong>{{number_format($item->price,2)}} EGP</strong>
                 </td>
                 <td class="text-center">
-                    <span>${{number_format($item->total,2)}}</span>
+                    <span>{{number_format($item->total,2)}} EGP</span>
                 </td>
             </tr>
         @empty
@@ -55,12 +55,12 @@
         </tr>
         <tr>
             <th >Sub amount</th>
-            <td> ${{number_format($order->subtotal,2)}}</td>
+            <td> {{number_format($order->subtotal,2)}} EGP</td>
         </tr>
         @if($order->discount)
         <tr>
             <th>Discount {{$order->coupon_code ?'('.$order->coupon_code.')' :''}}</th>
-            <td>${{number_format($order->discount,2)}}</td>
+            <td>{{number_format($order->discount,2)}} EGP</td>
         </tr>
         @endif
         <tr>
@@ -69,14 +69,14 @@
             </th>
             <td>
 
-                <span class="">${{number_format($order->shipping,2)}}</span>
+                <span class="">{{number_format($order->shipping,2)}} EGP</span>
 
             </td>
         </tr>
         <tr>
             <th>Total amount</th>
             <td>
-                <span class="">${{number_format($order->grand_total,2)}}</span>
+                <span class="">{{number_format($order->grand_total,2)}} EGP</span>
             </td>
         </tr>
         <tr>

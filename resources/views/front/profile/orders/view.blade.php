@@ -82,19 +82,22 @@
                                                     @endphp
                                                     <span class="badge {{$status_class}}">{{$order->status->status}}</span>
                                                 </p>
+                                                @php
+                                                    $payment_method = getPaymentMethod($order->payment_method)
+                                                @endphp
                                                 <p>
 
                                                     <span class="d-inline-block me-1">Payment method: </span>
-                                                    <strong class="text-info">{{\App\Models\PaymentMethod::getSettings($order->payment_method)['payment_'.$order->payment_method.'_name']}}</strong>
+                                                    <strong class="text-info">{{$payment_method['payment_'.$order->payment_method.'_name']}}</strong>
                                                 </p>
                                                 <p>
                                                     <span class="d-inline-block me-1">Payment status: </span>
                                                     @php
-                                                        if ($order->status->status =='pending'){
+                                                        if ($order->payment->status =='pending'){
                                                             $payment_class = 'bg-warning text-warning-fg bg-secondary';
-                                                        }elseif ($order->status->status =='completed'){
+                                                        }elseif ($order->payment->status =='completed'){
                                                             $payment_class = 'bg-success text-success-fg';
-                                                        }elseif ($order->status->status =='failed'){
+                                                        }elseif ($order->payment->status =='failed'){
                                                             $payment_class = 'bg-danger text-danger-fg';
                                                         }else{
                                                             $payment_class = 'bg-warning text-warning-fg bg-secondary';
@@ -161,11 +164,11 @@
                                                             </td>
                                                             <td class="text-center">
 
-                                                                <span>${{number_format($item->price,2)}}</span>
+                                                                <span>{{number_format($item->price,2)}} EGP</span>
                                                             </td>
                                                             <td class="text-center">{{$item->qty}}</td>
                                                             <td class="text-center">
-                                                                <strong>${{number_format($item->total,2)}}</strong>
+                                                                <strong>{{number_format($item->total,2)}} EGP</strong>
                                                             </td>
                                                         </tr>
                                                     @empty
@@ -183,23 +186,23 @@
                                                                 <tbody>
                                                                 <tr>
                                                                     <td class="cart_total_label">Subtotal</td>
-                                                                    <td class="cart_total_amount cartSubTotal" >${{number_format($order->subtotal,2)}}</td>
+                                                                    <td class="cart_total_amount cartSubTotal" >{{number_format($order->subtotal,2)}} EGP</td>
                                                                 </tr>
                                                                 @if($order->discount)
                                                                     <tr>
                                                                         <td>Discount({{$order->coupon_code}})</td>
-                                                                        <td class="product-subtotal" id="Discount">${{number_format($order->discount,2)}}</td>
+                                                                        <td class="product-subtotal" id="Discount">{{number_format($order->discount,2)}} EGP</td>
                                                                     </tr>
                                                                 @endif
 
                                                                 <tr>
                                                                     <td class="cart_total_label">Shipping</td>
-                                                                    <td class="cart_total_amount" id="total_shipping">${{number_format($order->shipping,2)}}</td>
+                                                                    <td class="cart_total_amount" id="total_shipping">{{number_format($order->shipping,2)}} EGP</td>
                                                                 </tr>
                                                                 <tr style="    border-color: transparent;">
                                                                     <td class="cart_total_label">Total</td>
                                                                     <td class="cart_total_amount ">
-                                                                        <strong class="cartTotal" id="grand_total">${{number_format($order->grand_total,2)}}</strong>
+                                                                        <strong class="cartTotal" id="grand_total">{{number_format($order->grand_total,2)}} EGP</strong>
                                                                     </td>
                                                                 </tr>
 

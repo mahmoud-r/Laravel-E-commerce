@@ -5,6 +5,9 @@
     <li class="breadcrumb-item "><a href="{{route('sub_category.index',$subCategory->category->id)}}">{{$subCategory->category->name}}</a></li>
     <li class="breadcrumb-item active">{{$subCategory->name}}</li>
 @endsection
+
+@section('title')Sub Categories - {{$subCategory->name}} @endsection
+
 @section('header')
     <section class="content-header">
         <div class="container-fluid">

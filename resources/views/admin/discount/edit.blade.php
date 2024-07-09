@@ -9,6 +9,8 @@
     </style>
 @endsection
 
+@section('title')Discount - {{$Coupon->name}} @endsection
+
 @section('breadcrumb')
     <li class="breadcrumb-item "><a href="{{route('dashboard')}}">Dashboard</a></li>
     <li class="breadcrumb-item "><a href="{{Route('discount.index')}}">Discount Coupons</a></li>

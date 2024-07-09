@@ -12,6 +12,13 @@ use Illuminate\Support\Str;
 
 class SubCategoryController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('permission:category-list|category-create|category-edit|category-delete', ['only' => ['index','store','getAll'] ]);
+        $this->middleware('permission:category-create', ['only' => ['create','store']]);
+        $this->middleware('permission:category-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:category-delete', ['only' => ['destroy']]);
+    }
 
     public function index($category_id)
     {
@@ -33,7 +40,6 @@ class SubCategoryController extends Controller
         return view('admin.category.subCategory.create',compact('categories','category'));
 
     }
-
 
     public function store(Request $request)
     {
@@ -82,7 +88,6 @@ class SubCategoryController extends Controller
         return view('admin.category.subCategory.edit',compact('subCategory'));
     }
 
-
     public function update(Request $request, $id)
     {
         $subCategory= SubCategory::findOrFail($id);
@@ -118,7 +123,6 @@ class SubCategoryController extends Controller
             ]);
         }
     }
-
 
     public function destroy(Request $request, $id)
     {

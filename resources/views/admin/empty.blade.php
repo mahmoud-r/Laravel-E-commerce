@@ -1,7 +1,7 @@
 @extends('admin.master')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item active"><a href="{{route('dashboard')}}">Dashboard</a></li>
+    <li class="breadcrumb-item "><a href="{{route('dashboard')}}">Dashboard</a></li>
     <li class="breadcrumb-item active">Home</li>
 @endsection
 @section('header')
@@ -10,6 +10,7 @@
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1><a style="color: black" href="">Dashboard</a></h1>
+
                 </div>
                 <div class="col-sm-6 text-right">
 

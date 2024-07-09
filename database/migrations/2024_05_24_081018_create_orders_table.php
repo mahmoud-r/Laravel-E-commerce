@@ -22,6 +22,7 @@ return new class extends Migration
             $table->double('discount',10,2)->nullable();
             $table->double('grand_total',10,2);
             $table->text('note')->nullable();
+            $table->string('stripe_session_id')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

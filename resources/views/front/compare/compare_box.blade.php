@@ -30,10 +30,10 @@
                 <td class="row_title">Price</td>
                 @foreach($productsCompare as $productCompare)
                 <td class="product_price product_{{$productCompare->id}}">
-                    <span class="price">{{$productCompare->price}}</span>
+                    <span class="price">{{$productCompare->price}} EGP</span>
 
                     @if(!empty($productCompare->compare_price )&& $productCompare->compare_price > $productCompare->price)
-                        <del>${{$productCompare->compare_price}}</del>
+                        <del>{{$productCompare->compare_price}} EGP</del>
                         <div class="on_sale">
                             <span>{{$productCompare->discountPercentage()}}% Off</span>
                         </div>

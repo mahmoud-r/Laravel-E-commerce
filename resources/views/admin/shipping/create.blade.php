@@ -1,4 +1,5 @@
 @extends('admin.master')
+@section('title')Shipping Zones - Create @endsection
 
 @section('style')
     <style>

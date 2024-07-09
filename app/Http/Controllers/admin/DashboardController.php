@@ -29,7 +29,8 @@ class DashboardController extends Controller
 
         //total Revenue
         $totalRevenue =Order::whereHas('status',function ($q){
-            $q->where('status','!=','cancelled');
+            $q->where('status','!=','cancelled')
+                ->where('status', 'completed');
         })->sum('grand_total');
 
 
@@ -61,7 +62,7 @@ class DashboardController extends Controller
         // current Month
         $currentMonth = now()->month;
         $pendingOrders = Order::whereHas('status', function($q) use ($currentMonth) {
-            $q->where('status', 'pending')->whereMonth('created_at', $currentMonth);
+            $q->whereIn('status', ['pending','processing','shipping'])->whereMonth('created_at', $currentMonth);
         })->sum('grand_total');
 
         $completedOrders = Order::whereHas('status', function($q) use ($currentMonth) {

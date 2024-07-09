@@ -110,7 +110,7 @@ video {
 	width: 100%;
 }
 .section {
-	padding: 100px 0;
+	padding: 50px 0;
 	position:relative;
 }
 .section.small_pt,
@@ -3270,6 +3270,7 @@ input.text {
 	border-radius: 100%;
 	font-size: 24px;
 }
+
 /*===================================*
   06.END ICON BOX STYLE
 *===================================*/
@@ -7442,7 +7443,7 @@ address{
     flex-direction: column;
     gap: .25rem;
 }
-.progress .progress-bar {
+.product-review-number .progress .progress-bar {
     background-color: #ffb21d;
 }
 .product-review-progress-bar-value {
@@ -7459,4 +7460,39 @@ address{
 }
 .bottom_header_sticky .pr_search_trigger{
     display: none;
+}
+.list_filter li {
+    list-style: none;
+    margin-bottom: 10px;
+}
+.product_wrap .list_product_action_box {
+    display: none;
+}
+.slider-subtitle{
+    color: #292b2c;
+    font-family: 'Roboto';
+    font-size: 1.25rem;
+    font-weight: 500;
+    line-height: 1.2;
+}
+.grecaptcha-badge { visibility: hidden !important; }
+.product_img {
+    text-align: center;
+}
+.product_img img{
+    padding: 15px;
+    /*max-height: 200px;*/
+    object-fit: contain;
+}
+.deal_wrap .product_img img{
+    max-height: 100%;
+    object-fit: contain;
+}
+.deal_wrap .product_title{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    white-space: normal;
+    text-transform: capitalize;
 }

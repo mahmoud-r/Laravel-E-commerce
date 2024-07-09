@@ -6,6 +6,9 @@
     <li class="breadcrumb-item active"><a href="{{route('categories.index')}}">{{$category->name}}</a></li>
     <li class="breadcrumb-item active">Sub Categories</li>
 @endsection
+
+@section('title')Sub Categories @endsection
+
 @section('header')
     <section class="content-header">
         <div class="card mb-3 table-configuration-wrap" id="filter-card" style="display: none " >
@@ -19,7 +22,9 @@
                     <h1>{{$category->name}}</h1>
                 </div>
                 <div class="col-sm-6 text-right">
+                    @can('category-create')
                     <a href="{{Route('sub_category.create',$category->id)}}" class="btn btn-primary">New Sub Category</a>
+                    @endcan
                     <a href="{{Route('categories.index')}}" class="btn btn-primary">Back</a>
                 </div>
             </div>
@@ -77,7 +82,8 @@
 @section('script')
 
 <script>
-    function SubCategoryDelete(id,name) {
+    @can('category-delete')
+        function SubCategoryDelete(id,name) {
         Swal.fire({
             title: "Do you want to Delete "+name+"?",
             showCancelButton: true,
@@ -111,6 +117,7 @@
             }
         });
     }
+    @endcan
 
     $(document).ready(function() {
         var currentDate = new Date();
@@ -167,8 +174,8 @@
                     },
                     { data: null, render: function(data, type, row) {
                             var editUrl = '{{ route("sub_category.edit", ":id") }}'.replace(':id', row.id);
-                            return '<a href="' + editUrl + '"><svg class="filament-link-icon w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path></svg></a>' +
-                                '<a href="#" onclick="SubCategoryDelete(' + row.id + ',\'' + row.name + '\')" class="text-danger w-4 h-4 mr-1"><svg class="filament-link-icon w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg></a>';
+                            return ' @can('category-edit')<a href="' + editUrl + '"><svg class="filament-link-icon w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path></svg></a>@endcan' +
+                                ' @can('category-delete')<a href="#" onclick="SubCategoryDelete(' + row.id + ',\'' + row.name + '\')" class="text-danger w-4 h-4 mr-1"><svg class="filament-link-icon w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg></a>@endcan';
                         }
                     },
                     { data: 'created_at', visible: false, render: function(data) {

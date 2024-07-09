@@ -19,6 +19,7 @@
         }
     </style>
 @endsection
+@section('title')Admins - {{$admin->name}} @endsection
 
 @section('breadcrumb')
     <li class="breadcrumb-item "><a href="{{route('dashboard')}}">Dashboard</a></li>

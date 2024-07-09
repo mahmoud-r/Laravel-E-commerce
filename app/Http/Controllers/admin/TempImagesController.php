@@ -14,7 +14,7 @@ class TempImagesController extends Controller
     public function create(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5048',
         ]);
 
         if ($validator->fails()) {
@@ -57,7 +57,7 @@ class TempImagesController extends Controller
                     return response()->json([
                         'status' => true,
                         'image_id' => $tempImage->id,
-                        'ImagePath' => asset('/temp/thumb/'. $newName),
+                        'ImagePath' => asset('/temp/'. $newName),
                         'msg' => 'Image uploaded successfully'
                     ]);
                 } else {

@@ -12,6 +12,17 @@ use Illuminate\Support\Facades\File;
 class SettingsController extends Controller
 {
     use ImageTrait;
+    function __construct()
+    {
+        $this->middleware('permission:settings-general|settings-payment-methods|settings-email|settings-social|settings-social-login|settings-recaptcha', ['only' => ['index'] ]);
+        $this->middleware('permission:settings-email', ['only' => ['email','store']]);
+        $this->middleware('permission:settings-general', ['only' => ['general','store']]);
+        $this->middleware('permission:settings-social', ['only' => ['social','store']]);
+        $this->middleware('permission:settings-social-login', ['only' => ['social_login','store']]);
+        $this->middleware('permission:settings-recaptcha', ['only' => ['recaptcha','store']]);
+
+
+    }
     public function index()
     {
         return view('admin.settings.index');
@@ -24,6 +35,16 @@ class SettingsController extends Controller
         return view('admin.settings.general');
     }
 
+    public function social(){
+        return view('admin.settings.social');
+    }
+    public function social_login(){
+        return view('admin.settings.social_login');
+    }
+
+    public function recaptcha(){
+        return view('admin.settings.recaptcha');
+    }
     public function store(storeSetingsRequest $request)
     {
         $old_logo = get_setting('store_logo');

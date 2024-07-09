@@ -1,5 +1,6 @@
 @extends('admin.master')
 
+@section('title')Roles @endsection
 
 @section('breadcrumb')
     <li class="breadcrumb-item "><a href="{{route('dashboard')}}">Dashboard</a></li>
@@ -64,7 +65,7 @@
 
                         <tr id="role_{{ $role->id }}">
                             <td>{{ $i +1 }}</td>
-                            <td class="text-center">{{ $role->name }}</td>
+                            <td class="text-center"><a href="{{route('roles.edit',$role->id)}}">{{ $role->name }}</a></td>
                             <td>{{ \Carbon\Carbon::parse($role->created_at)->format('Y-m-d')}}</td>
                             <td>
                                 <a  href="{{ route('roles.show',$role->id) }}">
@@ -116,6 +117,7 @@
 @section('script')
 
     <script>
+        @can('role-delete')
         function RoleDelete(id,name) {
             Swal.fire({
                 title: "Do you want to Delete "+name+"?",
@@ -147,6 +149,7 @@
                 }
             });
         }
+        @endcan
         $(document).ready(function() {
 
             var table = $('#myTable').DataTable({

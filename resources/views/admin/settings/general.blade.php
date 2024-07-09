@@ -1,9 +1,11 @@
 @extends('admin.master')
 
+@section('title')Settings - General @endsection
+
 @section('breadcrumb')
     <li class="breadcrumb-item "><a href="{{route('dashboard')}}">Dashboard</a></li>
     <li class="breadcrumb-item "><a href="{{route('settings.index')}}">Settings</a></li>
-    <li class="breadcrumb-item active">Email</li>
+    <li class="breadcrumb-item active">General</li>
 @endsection
 @section('style')
     <style>
@@ -105,7 +107,7 @@
                         <div class="row row-cols-lg-6">
                             <div class="col-lg-6">
                                 <div class="mb-3 position-relative">
-                                    <label for="store_name" class="form-label">Shop name {{config('mail.from.address')}}</label>
+                                    <label for="store_name" class="form-label">Shop name </label>
                                     <input class="form-control" placeholder="Shop name" data-counter="60" name="store_name" type="text" value="{{get_setting('store_name')}}" id="store_name">
                                     <p class="error"></p>
                                 </div>
@@ -224,7 +226,7 @@
             maxFiles: 1,
             paramName: 'image',
             addRemoveLinks: false,
-            acceptedFiles: "image/jpeg,image/png,image/gif",
+            acceptedFiles: "image/jpeg,image/png,image/gif,image/webp",
             headers: {
                 'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
             }, success: function(file, response){
@@ -234,6 +236,7 @@
 
             }
         });
+
          $("#logo_white").dropzone({
             init: function() {
                 this.on('addedfile', function(file) {
@@ -246,7 +249,7 @@
             maxFiles: 1,
             paramName: 'image',
             addRemoveLinks: false,
-            acceptedFiles: "image/jpeg,image/png,image/gif",
+             acceptedFiles: "image/jpeg,image/png,image/gif,image/webp",
             headers: {
                 'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
             }, success: function(file, response){
@@ -267,7 +270,7 @@
             maxFiles: 1,
             paramName: 'image',
             addRemoveLinks: false,
-            acceptedFiles: "image/jpeg,image/png,image/gif",
+             acceptedFiles: "image/jpeg,image/png,image/gif,image/webp",
             headers: {
                 'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
             }, success: function(file, response){

@@ -32,7 +32,7 @@
 
                 <span class="cart_quantity">
                     <span class="cart_amount itemTotal-{{$item->id}}">
-                            ${{$item->total }}
+                            {{$item->total }} EGP
                     </span>
                 </span>
             </li>
@@ -50,7 +50,7 @@
             <p class="cart_total">
                 <strong>Subtotal:</strong>
                 <span class="cart_price cartSubTotal">
-                     ${{Cart::instance('default')->subtotal()}}
+                     {{Cart::instance('default')->subtotal()}} EGP
                 </span>
             </p>
             <p class="cart_buttons">

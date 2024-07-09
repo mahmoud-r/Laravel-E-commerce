@@ -19,7 +19,7 @@ class storeSetingsRequest extends FormRequest
     {
         return [
             'store_name'=>'string|max:255',
-            'store_phone'=>'phone:EG',
+            'store_phone'=>'string',
             'store_email'=>'email|max:255',
             'store_address'=>'string|max:255',
             'store_description'=>'string|max:255',
@@ -34,6 +34,20 @@ class storeSetingsRequest extends FormRequest
             'email_user_review_when_order_completed'=>'boolean',
             'email_user_confirm_review'=>'boolean',
             'email_user_new_review_admin'=>'boolean',
+            'facebook' => 'nullable|url|regex:/^https:\/\/www\.facebook\.com/',
+            'x' => 'nullable|url|regex:/^https:\/\/x\.com/',
+            'youtube' => 'nullable|url|regex:/^https:\/\/www\.youtube\.com/',
+            'instagram' => 'nullable|url|regex:/^https:\/\/www\.instagram\.com/',
+            'recaptcha_site_key' => 'nullable|string',
+            'recaptcha_secret' => 'nullable|string',
+            'facebook_client_id' => 'nullable|string',
+            'facebook_client_secret' => 'nullable|string',
+            'facebook_login_status' => 'nullable|boolean',
+            'facebook_redirect' => 'nullable',
+            'google_client_id' => 'nullable|string',
+            'google_client_secret' => 'nullable|string',
+            'google_login_status' => 'nullable|boolean',
+
         ];
     }
 

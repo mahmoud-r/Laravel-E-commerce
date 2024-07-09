@@ -10,6 +10,8 @@
     <li class="breadcrumb-item "><a href="{{route('orders.index')}}">Orders</a></li>
     <li class="breadcrumb-item active">{{$order->order_number}}</li>
 @endsection
+@section('title')Orders - {{$order->order_number}} @endsection
+
 @section('header')
     <section class="content-header">
         <div class="container-fluid">
@@ -89,10 +91,10 @@
                                     <td class="text-center">
                                         <strong>{{$item->qty}}</strong>
                                         <span>×</span>
-                                        <strong>${{number_format($item->price,2)}}</strong>
+                                        <strong>{{number_format($item->price,2)}} EGP</strong>
                                     </td>
                                     <td class="text-center">
-                                        <span>${{number_format($item->total,2)}}</span>
+                                        <span>{{number_format($item->total,2)}} EGP</span>
                                     </td>
                                 </tr>
                             @empty
@@ -108,11 +110,11 @@
                                     </tr>
                                     <tr>
                                         <th>Sub amount</th>
-                                        <td> ${{number_format($order->subtotal,2)}}</td>
+                                        <td> {{number_format($order->subtotal,2)}} EGP</td>
                                     </tr>
                                     <tr>
                                         <th>Discount {{$order->coupon_code ?'('.$order->coupon_code.')' :''}}</th>
-                                        <td>${{number_format($order->discount,2)}}</td>
+                                        <td>{{number_format($order->discount,2)}} EGP</td>
                                     </tr>
                                     <tr>
                                         <th>
@@ -120,14 +122,14 @@
                                         </th>
                                         <td>
 
-                                            <span class="">${{number_format($order->shipping,2)}}</span>
+                                            <span class="">{{number_format($order->shipping,2)}} EGP</span>
 
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>Total amount</th>
                                         <td>
-                                             <span class="">${{number_format($order->grand_total,2)}}</span>
+                                             <span class="">{{number_format($order->grand_total,2)}} EGP</span>
                                         </td>
                                     </tr>
                                     <tr>
@@ -181,11 +183,9 @@
                                         <textarea class="form-control textarea-auto-height" name="admin_note" id="description" placeholder="Add note...">{{$order->status->admin_note}}</textarea>
                                     </div>
 
-                                    <button class="btn   btn-update-order" type="submit">
-
-                                        Save
-
-                                    </button>
+                                    @can('order-update-note')
+                                    <button class="btn   btn-update-order" type="submit">Save</button>
+                                    @endcan
                                 </form>
                             </div>
                         </div>
@@ -216,17 +216,19 @@
                                     Order was confirmed
                                 @endif
                             </div>
-                            @if($order->status->status =='pending')
-                                <div class="btn-list">
-                                    <form method="post" action="{{route('OrderConfirm')}}">
-                                        @csrf
-                                        <input type="hidden" name="order_id" value="{{$order->id}}">
-                                        <button class="btn btn-info  btn-trigger-confirm-payment save-btn" type="submit" >
-                                            Confirm order
-                                        </button>
-                                    </form>
-                                </div>
-                            @endif
+                            @can('order-confirm')
+                                @if($order->status->status =='pending')
+                                    <div class="btn-list">
+                                        <form method="post" action="{{route('OrderConfirm')}}">
+                                            @csrf
+                                            <input type="hidden" name="order_id" value="{{$order->id}}">
+                                            <button class="btn btn-info  btn-trigger-confirm-payment save-btn" type="submit" >
+                                                Confirm order
+                                            </button>
+                                        </form>
+                                    </div>
+                                @endif
+                            @endcan
                         </div>
 
                         <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
@@ -248,7 +250,7 @@
                                         <path d="M5 12l5 5l10 -10"></path>
                                     </svg>
 
-                                    Payment ${{number_format($order->grand_total,2)}} was accepted
+                                    Payment {{number_format($order->grand_total,2)}} EGP was accepted
                                 @elseif($order->Payment->status =='failed')
 
                                     <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -263,17 +265,19 @@
                                 @endif
 
                             </div>
-                            @if($order->Payment->status =='pending')
-                            <div class="btn-list">
-                                @if($order->status->status !='cancelled')
-                                <button class="btn btn-info  btn-trigger-confirm-payment save-btn" type="button" data-toggle="modal" data-target="#confirm-payment-modal" >
+                            @can('order-payment-confirm')
+                                @if($order->Payment->status =='pending')
+                                <div class="btn-list">
+                                    @if($order->status->status !='cancelled')
+                                    <button class="btn btn-info  btn-trigger-confirm-payment save-btn" type="button" data-toggle="modal" data-target="#confirm-payment-modal" >
 
-                                    Confirm payment
+                                        Confirm payment
 
-                                </button>
+                                    </button>
+                                    @endif
+                                </div>
                                 @endif
-                            </div>
-                            @endif
+                            @endcan
                         </div>
 
                         <div class="p-3 d-flex justify-content-between align-items-center">
@@ -322,18 +326,20 @@
                         </div>
 
                         <div class="card-footer shipment-actions-wrapper btn-list">
-                            @if($order->status->status !='cancelled')
-                            <button class="btn   btn-trigger-update-shipping-status" type="button" data-toggle="modal" data-target="#update-shipping-status-modal">
-                                <svg class="icon icon-left" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                    <path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
-                                    <path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
-                                    <path d="M5 17h-2v-4m-1 -8h11v12m-4 0h6m4 0h2v-6h-8m0 -5h5l3 5"></path>
-                                    <path d="M3 9l4 0"></path>
-                                </svg>
-                                Update shipping status
-                            </button>
-                            @endif
+                            @can('order-update-shipping-status')
+                                @if($order->status->status !='cancelled')
+                                <button class="btn   btn-trigger-update-shipping-status" type="button" data-toggle="modal" data-target="#update-shipping-status-modal">
+                                    <svg class="icon icon-left" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                        <path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+                                        <path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+                                        <path d="M5 17h-2v-4m-1 -8h11v12m-4 0h6m4 0h2v-6h-8m0 -5h5l3 5"></path>
+                                        <path d="M3 9l4 0"></path>
+                                    </svg>
+                                    Update shipping status
+                                </button>
+                                @endif
+                            @endcan
                         </div>
                     </div>
                 </div>
@@ -451,13 +457,15 @@
                     </div>
 
                 </div>
-                @if($order->status->status !='cancelled')
-                <div class="d-flex justify-content-end">
-                    <button class="btn btn-danger  btn-trigger-confirm-payment bg-danger  " type="button"  data-target="#cancel-order-modal" data-toggle="modal">
-                        Cancel order
-                    </button>
-                </div>
-                @endif
+                @can('order-cancel')
+                    @if($order->status->status !='cancelled')
+                    <div class="d-flex justify-content-end">
+                        <button class="btn btn-danger  btn-trigger-confirm-payment bg-danger  " type="button"  data-target="#cancel-order-modal" data-toggle="modal">
+                            Cancel order
+                        </button>
+                    </div>
+                    @endif
+                @endcan
             </div>
         </div>
     </div>
@@ -465,8 +473,9 @@
 
 
 
-    <!-- Modal -->
-    <div class="modal fade modal-blur" id="update-shipping-status-modal" tabindex="-1" aria-labelledby="update-shipping-status-modal" aria-hidden="true">
+    <!-- Modals -->
+    @can('order-update-shipping-status')
+      <div class="modal fade modal-blur" id="update-shipping-status-modal" tabindex="-1" aria-labelledby="update-shipping-status-modal" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -501,7 +510,10 @@
             </div>
         </div>
     </div>
-    <div class="modal fade modal-blur" id="confirm-payment-modal" tabindex="-1" aria-labelledby="confirm-payment-modal" aria-hidden="true">
+    @endcan
+
+    @can('order-payment-confirm')
+     <div class="modal fade modal-blur" id="confirm-payment-modal" tabindex="-1" aria-labelledby="confirm-payment-modal" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-sm" style="max-width: 380px">
             <div class="modal-content">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -550,6 +562,9 @@
         </div>
         </div>
     </div>
+    @endcan
+
+    @can('order-update-shipping-information')
     <div class="modal fade modal-blur " id="update-shipping-address-modal" tabindex="-1" aria-labelledby="confirm-payment-modal" aria-hidden="true" >
         <div class="modal-dialog modal-dialog-centered modal-md" role="document">
             <div class="modal-content">
@@ -714,6 +729,9 @@
             </div>
         </div>
     </div>
+    @endcan
+
+    @can('order-cancel')
     <div class="modal fade modal-blur" id="cancel-order-modal" tabindex="-1" aria-labelledby="cancel-order-modal" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-sm" style="max-width: 380px">
             <div class="modal-content">
@@ -762,7 +780,7 @@
             </div>
         </div>
     </div>
-
+    @endcan
 
 
 

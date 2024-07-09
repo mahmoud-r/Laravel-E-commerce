@@ -1,27 +1,24 @@
-<div class="section pb_20 small_pt">
+@php
+    $homeBanners = getPageContent('homeBanners');
+@endphp
+<section class="section pb_20 small_pt">
     <div class="container">
         <div class="row">
-            <div class="col-md-4">
-                <div class="sale-banner mb-3 mb-md-4">
-                    <a class="hover_effect1" href="#">
-                        <img src="{{asset('front_assets/images/shop_banner_img7.jpg')}}" alt="shop_banner_img7">
-                    </a>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="sale-banner mb-3 mb-md-4">
-                    <a class="hover_effect1" href="#">
-                        <img src="{{asset('front_assets/images/shop_banner_img8.jpg')}}" alt="shop_banner_img8">
-                    </a>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="sale-banner mb-3 mb-md-4">
-                    <a class="hover_effect1" href="#">
-                        <img src="{{asset('front_assets/images/shop_banner_img9.jpg')}}" alt="shop_banner_img9">
-                    </a>
-                </div>
-            </div>
+            @foreach($homeBanners as  $key =>$banner )
+                @if($banner['status'] == '1')
+                    <div class="col-md-4">
+                        <div class="sale-banner mb-3 mb-md-4">
+                            <a class="hover_effect1" href="{{$banner['link']}}" title="{{$banner['link']}}">
+                                @if(!empty($banner['img']))
+                                  <img src="{{asset('uploads/home_banners/images/'.$banner['img'])}}" alt="{{$key}}">
+                                @endif
+                            </a>
+                        </div>
+                    </div>
+                @endif
+            @endforeach
         </div>
     </div>
-</div>
+
+
+</section>

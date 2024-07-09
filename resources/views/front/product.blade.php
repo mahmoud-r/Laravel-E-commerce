@@ -1,16 +1,82 @@
 @extends('front.layouts.app')
 
 
-@section('title')@endsection
+@section('meta_index', $product->seo_index)
+@section('title', $product->seo_title)
+@section('meta_description', $product->seo_description)
+
+@section('og_type', 'product')
+@section('og_title',$product->seo_title)
+@section('og_description',$product->seo_description)
+@section('og_image', !empty($product->images->first())? asset('uploads/products/images/'.$product->images->first()->image) : asset('front_assets/images/empty-img.png'))
+@section('og_url', url()->current())
+
+@section('twitter_title',$product->seo_title)
+@section('twitter_description',$product->seo_description)
+@section('twitter_image',!empty($product->images->first()) ? asset('uploads/products/images/'.$product->images->first()->image) : asset('front_assets/images/empty-img.png'))
+
+@section('meta')
+        <meta property="product:price:amount" content="{{ $product->price }}">
+        <meta property="product:price:currency" content="EGP">
+
+        <script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "Product",
+        "name": "{{ $product->title }}",
+        "image": "{{ !empty($product->images->first()) ? asset('uploads/products/images/'.$product->images->first()->image) : asset('front_assets/images/empty-img.png') }}",
+        "description": "{{ $product->seo_description }}",
+        "sku": "{{ $product->sku }}",
+        "mpn": "{{ $product->sku }}",
+        "brand": {
+            "@type": "Thing",
+            "name": "{{ $product->brand->name }}"
+        },
+        "offers": {
+            "@type": "Offer",
+            "url": "{{ url()->current() }}",
+            "priceCurrency": "EGP",
+            "price": "{{ $product->price }}",
+            "itemCondition": "http://schema.org/NewCondition",
+            "availability": "http://schema.org/{{ $product->qty >0 && $product->status =1 ? 'InStock' : 'OutOfStock' }}"
+        }
+    }
+    </script>
+    @endsection
 
 @section('style')
 <style>
     .page-title-mini .page-title h1{
         font-size: 20px;
     }
-
-
-
+    .product_img_box{
+        height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .product_img_box img{
+    width: 100%;
+    height: auto;
+    max-height: 400px;
+    object-fit: contain;
+    padding: 3rem;
+}
+    .slick-slide{
+        width: 100%;
+    }
+    .product_gallery_item{
+        width: 100%;
+    }
+    .product_gallery_item img{
+        width: 100%;
+        height: auto;
+        max-height: 75px;
+        object-fit: contain;
+    }
+    .ml-auto{
+        margin-left: auto;
+    }
 </style>
 @endsection
 @section('breadcrumb')
@@ -27,7 +93,9 @@
                         <li class="breadcrumb-item"><a href="{{route('home')}}">Home</a></li>
                         <li class="breadcrumb-item"><a href="{{route('front.shop')}}">Shop</a></li>
                         <li class="breadcrumb-item"><a href="{{route('front.shop',$product->category->slug)}}">{{$product->category->name}}</a></li>
+                        @if($product->subCategory)
                         <li class="breadcrumb-item active"><a href="{{route('front.shop',[$product->category->slug,$product->subCategory->slug])}}">{{$product->subCategory->name}}</a></li>
+                        @endif
                     </ol>
                 </div>
             </div>
@@ -93,10 +161,10 @@
                         <div class="product_description">
                             <h4 class="product_title"><a href="#">{{$product->title}}</a></h4>
                             <div class="product_price">
-                                <span class="price">{{$product->price}}</span>
+                                <span class="price">{{$product->price}} EGP </span>
 
                                 @if(!empty($product->compare_price )&& $product->compare_price > $product->price)
-                                    <del>${{$product->compare_price}}</del>
+                                    <del>{{$product->compare_price}} EGP</del>
                                     <div class="on_sale">
                                         <span>{{$product->discountPercentage()}}% Off</span>
                                     </div>
@@ -108,8 +176,10 @@
                                 </div>
                                 <span class="rating_num">({{$product->rating_count}})</span>
                             </div>
+                            <div class="clearfix"></div>
+
                             <div class="pr_desc">
-                                <p>
+                                <p style="display: block">
                                 {!! $product->short_description !!}
                                 </p>
                             </div>
@@ -121,7 +191,7 @@
                                         @if(!empty($product->warranty))
                                         <li><i class="linearicons-sync"></i> {{$product->return}}</li>
                                         @endif
-                                        @if($product->cachDelivery ==1 )
+                                        @if(getPaymentMethod('cod')['status'] == '1' )
                                         <li><i class="linearicons-bag-dollar"></i> Cash on Delivery available</li>
                                         @endif
 
@@ -148,7 +218,6 @@
 
                                     @endif
 
-{{--                                    <a class="add_compare" href="javascript:void(0)" onclick="addToCompare({{$product->id}})"><i class="icon-shuffle"></i></a>--}}
                                     <a class="add_compare popup-ajax" href="{{route('front.compare.show',$product->id)}}" ><i class="icon-shuffle"></i></a>
                                     <a class="add_wishlist" href="javascript:void(0)" onclick="addToWishlist({{$product->id}})"><i class="icon-heart"></i></a>
                                 </div>
@@ -159,16 +228,17 @@
                         <ul class="product-meta">
                             <li>SKU: <a href="#">{{$product->sku}}</a></li>
                             <li>Category: <a href="{{route('front.shop',$product->category->slug)}}">{{$product->category->name}}</a></li>
+                            <li>Brand: <a href="{{route('front.shop',['brand'=>$product->brand->slug])}}">{{$product->brand->name}}</a> </li>
                         </ul>
 
                         <div class="product_share">
                             <span>Share:</span>
                             <ul class="social_icons">
-                                <li><a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(Request::fullUrl()) }}"><i class="ion-social-facebook"></i></a></li>
-                                <li><a href="#"><i class="ion-social-twitter"></i></a></li>
-                                <li><a href="#"><i class="ion-social-googleplus"></i></a></li>
-                                <li><a href="#"><i class="ion-social-youtube-outline"></i></a></li>
-                                <li><a href="#"><i class="ion-social-instagram-outline"></i></a></li>
+                                <li><a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(Request::fullUrl()) }}" target="_blank"><i class="ion-social-facebook"></i></a></li>
+                                <li><a href="https://twitter.com/intent/tweet?url={{ urlencode(Request::fullUrl()) }}&text={{ urlencode($product->title) }}" target="_blank"><i class="ion-social-twitter"></i></a></li>
+                                <li><a href="https://www.linkedin.com/shareArticle?mini=true&url={{ urlencode(Request::fullUrl()) }}&title={{ urlencode($product->title) }}" target="_blank"><i class="ion-social-linkedin"></i></a></li>
+                                <li><a href="https://pinterest.com/pin/create/button/?url={{ urlencode(Request::fullUrl()) }}&media={{ urlencode($product->image_url) }}&description={{ urlencode($product->title) }}" target="_blank"><i class="ion-social-pinterest"></i></a></li>
+                                <li><a href="https://api.whatsapp.com/send?text={{ urlencode(Request::fullUrl()) }}" target="_blank"><i class="ion-social-whatsapp"></i></a></li>
                             </ul>
                         </div>
                     </div>
@@ -195,27 +265,11 @@
                         </ul>
                         <div class="tab-content shop_info_tab">
                             <div class="tab-pane fade show active" id="Description" role="tabpanel" aria-labelledby="Description-tab">
+
                                 {!! $product->description !!}
                             </div>
                             <div class="tab-pane fade" id="Additional-info" role="tabpanel" aria-labelledby="Additional-info-tab">
-                                <table class="table table-bordered">
-                                    <tr>
-                                        <td>Capacity</td>
-                                        <td>5 Kg</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Color</td>
-                                        <td>Black, Brown, Red,</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Water Resistant</td>
-                                        <td>Yes</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Material</td>
-                                        <td>Artificial Leather</td>
-                                    </tr>
-                                </table>
+                                @include('front.product.Additional-info')
                             </div>
                             @include('front.product.reviews_tab')
                         </div>
@@ -269,9 +323,9 @@
                                     <div class="product_info">
                                         <h6 class="product_title"><a href="{{route('front.product',$relatedProduct->slug)}}">{{$relatedProduct->title}}</a></h6>
                                         <div class="product_price">
-                                            <span class="price">${{$relatedProduct->price}}</span>
+                                            <span class="price">{{$relatedProduct->price}} EGP</span>
                                             @if(!empty($relatedProduct->compare_price && $relatedProduct->compare_price > $relatedProduct->price && $relatedProduct->qty > 0))
-                                                <del>${{$relatedProduct->compare_price}}</del>
+                                                <del>{{$relatedProduct->compare_price}} EGP</del>
                                                 <div class="on_sale">
                                                     <span>{{$relatedProduct->discountPercentage()}}% Off</span>
                                                 </div>

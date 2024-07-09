@@ -9,6 +9,15 @@ use Illuminate\Support\Facades\Validator;
 
 class ProductRatingController extends Controller
 {
+
+    function __construct()
+    {
+        $this->middleware('permission:reviews-list|reviews-publish|reviews-delete', ['only' => ['index','getAll'] ]);
+        $this->middleware('permission:reviews-publish', ['only' => ['publishToggle']]);
+        $this->middleware('permission:category-delete', ['only' => ['destroy']]);
+
+    }
+
     public function index(){
         return view('admin.reviews.index');
     }

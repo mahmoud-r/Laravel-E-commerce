@@ -16,6 +16,16 @@ class CategoryController extends Controller
 
     use ImageTrait;
 
+    function __construct()
+    {
+        $this->middleware('permission:category-list|category-create|category-edit|category-delete', ['only' => ['index','getAll'] ]);
+        $this->middleware('permission:category-create', ['only' => ['create','store']]);
+        $this->middleware('permission:category-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:category-delete', ['only' => ['destroy']]);
+
+    }
+
+
 
     public function index()
     {
@@ -32,8 +42,6 @@ class CategoryController extends Controller
 
         return view('admin/category/create');
     }
-
-
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[
@@ -41,6 +49,7 @@ class CategoryController extends Controller
            'slug' => 'required|unique:categories',
             'status' => 'required|boolean',
             'showHome' => 'required|boolean',
+            'sort' => 'required|integer',
         ]);
         $slug =Str::slug($request->slug);
 
@@ -55,6 +64,7 @@ class CategoryController extends Controller
             'status' => $request->status,
             'showHome' => $request->showHome,
             'slug' => $slug,
+            'sort' => $request->sort,
         ]);
 //            save Image
         if (!empty($request->image_id)){
@@ -75,15 +85,11 @@ class CategoryController extends Controller
         ]);
     }
 
-
-
     public function edit($id)
     {
         $category = Category::findOrFail($id);
         return view('admin.category.edit',compact('category'));
     }
-
-
     public function update(Request $request,  $id)
     {
         $category = Category::findOrFail($id);
@@ -93,6 +99,8 @@ class CategoryController extends Controller
             'slug' => 'required|unique:categories,slug,'.$category->id.'id',
             'status' => 'required|boolean',
             'showHome' => 'required|boolean',
+            'sort' => 'required|integer',
+
 
         ]);
         $slug =Str::slug($request->slug);
@@ -109,6 +117,7 @@ class CategoryController extends Controller
             'name'=>$request->name,
             'status'=>$request->status,
             'showHome'=>$request->showHome,
+            'sort' => $request->sort,
             'slug'=>$slug,
         ]);
 
@@ -136,7 +145,6 @@ class CategoryController extends Controller
         ]);
 
     }
-
 
     public function destroy(Request $request, $id)
     {

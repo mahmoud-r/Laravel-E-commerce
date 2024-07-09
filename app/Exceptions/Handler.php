@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\Auth;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -44,5 +45,15 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+        $this->renderable(function (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e, $request) {
+            if ($request->is('dashboard/*') && Auth('admin')->check()) {
+                return response()->view('errors.404-dashboard', [], 404);
+
+            } else {
+                return response()->view('errors.404-main', [], 404);
+            }
+        });
     }
+
+
 }

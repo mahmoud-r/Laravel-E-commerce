@@ -10,7 +10,12 @@ use Illuminate\Http\Request;
 
 class ShipmentController extends Controller
 {
+        function __construct()
+        {
+            $this->middleware('permission:shipment-list|shipping-update', ['only' => ['index','getAll','shipmentView'] ]);
+            $this->middleware('permission:shipment-update', ['only' => ['shipmentUpdateStatus','shipmentUpdateInfo']]);
 
+        }
         public function index(){
 
             return view('admin.shipments.index');

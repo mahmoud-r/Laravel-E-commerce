@@ -20,7 +20,7 @@ class PaymentMethodsSeeder extends Seeder
                 'payment_stripe_client_id' => 'your-stripe-public-key',
                 'payment_stripe_secret' => 'your-stripe-private-key',
                 'payment_stripe_webhook_secret' => 'your-stripe-webhook-secret',
-                'status'=>'0'
+                'status'=>'1'
             ],
             'paypal' => [
                 'payment_paypal_name' => 'Fast and safe online payment via PayPal',
@@ -28,7 +28,7 @@ class PaymentMethodsSeeder extends Seeder
                 'payment_paypal_client_id' => 'your-paypal-client-id',
                 'payment_paypal_client_secret' => 'your-paypal-client-secret',
                 'payment_paypal_mode' => 'sandbox',
-                'status'=>'0'
+                'status'=>'1'
             ],
             'cod' => [
                 'payment_cod_name' => 'Cash on delivery (COD)',
@@ -41,7 +41,7 @@ class PaymentMethodsSeeder extends Seeder
                 'payment_bank_transfer_name' => 'Bank transfer',
                 'payment_bank_transfer_description' => 'Please send money to our bank account: ACB - 69270 213 19.',
                 'payment_bank_transfer_display_bank_info' => '1',
-                'status'=>'0'
+                'status'=>'1'
             ]
         ];
         foreach ($settings as $method => $setting) {

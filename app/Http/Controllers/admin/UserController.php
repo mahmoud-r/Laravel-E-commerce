@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreAdressRequest;
+use App\Http\Requests\StoreAddressRequest;
 use App\Http\Requests\StoreShippingRequest;
 use App\Http\Requests\UpdateAdressRequest;
 use App\Models\City;
@@ -16,6 +16,17 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('permission:customer-list|customer-create|customer-edit|customer-delete', ['only' => ['index','getAll','edit','customer-address-create','customer-address-edit','customer-address-delete'] ]);
+        $this->middleware('permission:customer-create', ['only' => ['create','store']]);
+        $this->middleware('permission:customer-edit', ['only' => ['update']]);
+        $this->middleware('permission:customer-delete', ['only' => ['destroy']]);
+        $this->middleware('permission:customer-address-create', ['only' => ['createAddress']]);
+        $this->middleware('permission:customer-address-edit', ['only' => ['editAddress']]);
+        $this->middleware('permission:customer-address-delete', ['only' => ['deleteAddress']]);
+
+    }
 
     public function index(Request $request)
     {
@@ -131,7 +142,7 @@ class UserController extends Controller
         }
     }
 
-    public function createAddress(StoreAdressRequest $request,$user){
+    public function createAddress(StoreAddressRequest $request, $user){
 
         $user = User::findOrFail($user);
         $address = $user->addresses()->create($request->validated());

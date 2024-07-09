@@ -27,6 +27,8 @@ class Order extends Model
         'grand_total',
         'notes',
         'payment_method',
+        'stripe_session_id',
+        'note'
 
     ];
 

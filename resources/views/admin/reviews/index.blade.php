@@ -1,9 +1,10 @@
 @extends('admin.master')
 
+@section('title')Reviews @endsection
 
 @section('breadcrumb')
     <li class="breadcrumb-item "><a href="{{route('dashboard')}}">Dashboard</a></li>
-    <li class="breadcrumb-item "><a href="{{route('reviews.index')}}">Brands</a></li>
+    <li class="breadcrumb-item "><a href="{{route('reviews.index')}}">Reviews</a></li>
     <li class="breadcrumb-item active">list</li>
 @endsection
 @section('header')
@@ -63,8 +64,12 @@
                         <th>Comment</th>
                         <th >Status</th>
                         <th >Date</th>
+                        @can('reviews-publish')
                         <th>Publish</th>
-                        <th >Delete</th>
+                        @endcan
+                        @can('reviews-delete')
+                        <th>Delete</th>
+                        @endcan
                     </tr>
                     </thead>
                 </table>
@@ -83,7 +88,7 @@
 @section('script')
 
 <script>
-
+    @can('reviews-delete')
     function ReviewDelete(id,name) {
         Swal.fire({
             title: "Do you want to Delete "+name+" review ?",
@@ -115,6 +120,7 @@
             }
         });
     }
+    @endcan
     $(document).ready(function() {
         var currentDate = new Date();
         var day = ("0" + currentDate.getDate()).slice(-2);
@@ -204,25 +210,25 @@
                     data: 'publishToggle',
                     name: 'publishToggle',
                     render: function(data, type, row) {
-                        return '<form method="post" action="{{ route("reviews.publishToggle") }}">' +
+                        return '  @can('reviews-publish')<form method="post" action="{{ route("reviews.publishToggle") }}">' +
                             '@csrf' +
                             '<input type="hidden" name="review_id" value="' + row.id + '">' +
                             '<input type="hidden" name="status" value="' + (row.status == 0 ? 1 : 0) + '">' +
                             '<button class="btn btn-info btn-trigger-confirm-payment ' + (row.status == 0 ? 'save-btn' : 'btn-info') + '" type="submit">' +
                             (row.status == 0 ? 'Publish' : 'Draft') +
                             '</button>' +
-                            '</form>';
+                            '</form>@endcan';
                     }
                 },
                 {
                     data: 'delete',
                     name: 'delete',
                     render: function(data, type, row) {
-                        return '<a href="#" onclick="ReviewDelete(' + row.id + ', \'' + row.user.name + '\', this)" class="text-danger w-4 h-4 mr-1">' +
+                        return '  @can('reviews-delete')<a href="#" onclick="ReviewDelete(' + row.id + ', \'' + row.user.name + '\', this)" class="text-danger w-4 h-4 mr-1">' +
                             '<svg class="filament-link-icon w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">' +
                             '<path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>' +
                             '</svg>' +
-                            '</a>';
+                            '</a>@endcan';
                     }
                 },
             ],

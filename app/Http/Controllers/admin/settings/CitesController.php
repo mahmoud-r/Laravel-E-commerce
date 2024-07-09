@@ -10,6 +10,14 @@ use Illuminate\Support\Facades\Validator;
 
 class CitesController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('permission:locations-list|locations-create|locations-edit|locations-delete', ['only' => ['index'] ]);
+        $this->middleware('permission:locations-create', ['only' => ['create','store']]);
+        $this->middleware('permission:locations-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:locations-delete', ['only' => ['destroy']]);
+
+    }
 
     public function index(Request $request ,$governorate)
     {

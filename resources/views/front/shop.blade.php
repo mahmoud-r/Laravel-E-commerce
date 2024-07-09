@@ -1,10 +1,53 @@
 @extends('front.layouts.app')
 
+@section('title')
+    {{ !empty($categorySelected) ? $categoreis->where('id', $categorySelected)->first()->name : 'Shop' }}
+@endsection
 
-@section('title')Shop @endsection
+
+
+@section('og_title')
+    {{ !empty($categorySelected) ? $categoreis->where('id', $categorySelected)->first()->name : 'Shop' }}
+@endsection
+
+@section('og_image')
+    {{ !empty($categorySelected) ? asset('uploads/categories/'.$categoreis->where('id', $categorySelected)->first()->image) : asset('uploads/site/images/'.get_setting('store_logo'))  }}
+@endsection
 
 @section('style')
-
+    <script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "CollectionPage",
+  "mainEntity": {
+    "@type": "ItemList",
+    "itemListElement": [
+      @foreach($products as $product)
+            {
+              "@type": "Product",
+              "name": "{{ $product->title }}",
+        "image": "{{ !empty($product->images->first()) ? asset('uploads/products/images/'.$product->images->first()->image) : asset('front_assets/images/empty-img.png') }}",
+        "description": "{{ $product->seo_description }}",
+        "sku": "{{ $product->sku }}",
+        "mpn": "{{ $product->sku }}",
+        "brand": {
+            "@type": "Thing",
+            "name": "{{ $product->brand->name }}"
+        },
+        "offers": {
+            "@type": "Offer",
+            "url": "{{ route('front.product', $product->slug) }}",
+            "priceCurrency": "EGP",
+            "price": "{{ $product->price }}",
+            "itemCondition": "http://schema.org/NewCondition",
+            "availability": "http://schema.org/{{ $product->qty >0 && $product->status ==1 ? 'InStock' : 'OutOfStock' }}"
+        }
+      } @if (!$loop->last) , @endif
+        @endforeach
+        ]
+      }
+    }
+</script>
 <style>
     .accordion-item{
         border: none !important;
@@ -92,63 +135,9 @@
                         @forelse($products as $product)
                             <div class="col-md-4 col-6">
                                 <div class="product">
-                                    @if($product->qty <= 0 || $product->status == 0 )
-
-                                    <span class="pr_flash bg-danger">Out of Stock</span>
-                                    @elseif(!empty($product->compare_price )&& $product->compare_price > $product->price)
-                                        <span class="pr_flash bg-danger">Hot</span>
-
-                                    @endif
-
-                                    <div class="product_img">
-                                        <a href="#">
-                                            @if($product->images->isNotEmpty())
-                                                <img src="{{asset('uploads/products/images/thumb/'.$product->images->first()->image)}}" alt="{{$product->title}}">
-                                            @else
-                                                <img src="{{asset('front_assets/images/default-300x300.jpg')}}" alt="{{$product->title}}">
-                                            @endif
-                                        </a>
-
-
-                                        <div class="product_action_box">
-                                            <ul class="list_none pr_action_btn">
-                                                <li class="add-to-cart"><a href="javascript:void(0)" onclick="addToCart({{$product->id}})"><i class="icon-basket-loaded"></i> Add To Cart</a></li>
-                                                <li><a class="add_compare popup-ajax" href="{{route('front.compare.show',$product->id)}}" ><i class="icon-shuffle"></i></a></li>
-                                                <li><a href="{{ route('front.quick-view', ['id' => $product->id]) }}" class="popup-ajax "><i class="icon-magnifier-add"></i></a></li>
-                                                <li><a  href="javascript:void(0)" onclick="addToWishlist({{$product->id}})"><i class="icon-heart"></i></a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="product_info">
-                                        <h6 class="product_title"><a href="{{route('front.product',$product->slug)}}">{{$product->title}}</a></h6>
-                                        <div class="product_price">
-                                            <span class="price">${{$product->price}}</span>
-                                            @if(!empty($product->compare_price && $product->compare_price > $product->price && $product->qty > 0))
-                                            <del>${{$product->compare_price}}</del>
-                                            <div class="on_sale">
-                                                <span>{{$product->discountPercentage()}}% Off</span>
-                                            </div>
-                                            @endif
-                                        </div>
-                                        <div class="rating_wrap">
-                                            <div class="rating">
-                                                <div class="product_rate" style="width:{{$product->average_rating_percentage}}%"></div>
-                                            </div>
-                                            <span class="rating_num">({{$product->rating_count}})</span>
-                                        </div>
-                                        <div class="pr_desc">
-                                            <p>{{$product->short_description}}</p>
-                                        </div>
-                                        <div class="list_product_action_box">
-                                            <ul class="list_none pr_action_btn">
-                                                <li class="add-to-cart"><a href="javascript:void(0)" onclick="addToCart({{$product->id}})" ><i class="icon-basket-loaded"></i> Add To Cart</a></li>
-                                                <li><a href="shop-compare.html" class="popup-ajax"><i class="icon-shuffle"></i></a></li>
-                                                <li><a href="{{ route('front.quick-view', ['id' => $product->id]) }}" class="popup-ajax"><i class="icon-magnifier-add"></i></a></li>
-                                                <li><a href="#"><i class="icon-heart"></i></a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
+                                    @include('front.product.product_box_top')
                                 </div>
+
                             </div>
                         @empty
                         @endforelse
@@ -161,85 +150,7 @@
                 </div>
 
                 <div class="col-lg-3 order-lg-first mt-4 pt-2 mt-lg-0 pt-lg-0">
-                    <div class="sidebar">
-                        <input type="hidden" value="{{$searchQuery}}" id="search-q">
-                        <div class="widget accordion" id="accordion">
-                            <h5 class="widget_title">Categories</h5>
-                            <ul class="widget_categories">
-                                @forelse($categoreis as $key=>$category)
-
-                                    <li class="accordion-item">
-                                        <div class="accordion-header" data-bs-toggle="collapse" data-bs-target="#collapse-{{$key}}">
-                                            <a href="{{route('front.shop',[$category->slug,'search' => $searchQuery])}}" class="{{$categorySelected == $category->id ? 'text-primary':''}}">
-                                                <span class="categories_name">{{$category->name}}</span>
-                                                <span class="categories_num">({{$category->products->count()}})</span>
-                                            </a>
-                                        </div>
-                                        @if($category->subCategories->isNotEmpty())
-                                            <div id="collapse-{{$key}}" class="accordion-collapse collapse {{$categorySelected == $category->id ? 'show':''}}" aria-labelledby="{{$category->name}}" data-bs-parent="#accordionExample" aria-controls="{{$category->name}}">
-
-                                                <div  class="accordion-body ">
-                                                    <ul>
-                                                        @forelse($category->subCategories as $subCategory)
-                                                            <li><a href="{{route('front.shop',[$category->slug,$subCategory->slug,'search' => $searchQuery])}}" class="sub_category_name  {{$subCategorySelected == $subCategory->id ? 'text-primary':''}}"><span class="sub_category_name">{{$subCategory->name}}</span></a></li>
-                                                        @empty
-                                                        @endforelse
-                                                    </ul>
-                                                </div>
-                                            </div>
-
-                                        @endif
-                                    </li>
-
-                                @empty
-                                @endforelse
-                            </ul>
-                        </div>
-                        <div class="widget">
-                            <h5 class="widget_title">Filter</h5>
-                            <div class="filter_price">
-                                <div id="price_filter" data-min="{{$minPrice !='' ? $minPrice :0 }}" data-max="{{$maxPrice !='' ? $maxPrice :100000 }}" data-min-value="{{$minPrice !='' ? $minPrice :0 }}" data-max-value="{{$maxPrice !='' ? $maxPrice :100000 }}" data-price-sign="$"></div>
-                                <div class="price_range d-grid gap-2 align-items-center">
-                                    <span>Price: <span id="flt_price"></span></span>
-                                    <button class="btn btn-fill-out  text-uppercase btn-sm mt-2" type="button" onclick="apply_filters()">Filter</button>
-
-                                    <input type="hidden" id="price_first" value="">
-                                    <input type="hidden" id="price_second" value="">
-
-
-                                </div>
-
-                            </div>
-                        </div>
-                        <div class="widget">
-                            <h5 class="widget_title">Brand</h5>
-                            <ul class="list_brand">
-                                @forelse($brands as $brand)
-                                    <li>
-                                        <div class="custome-checkbox">
-                                            <input {{in_array($brand->id,$brandArray) ?'checked' : '' }} class="form-check-input brand-label" type="checkbox" name="brands[]" id="brand-{{$brand->id}}" value="{{$brand->id}}">
-                                            <label class="form-check-label" for="brand-{{$brand->id}}"><span>{{$brand->name}}</span></label>
-                                        </div>
-                                    </li>
-                                @empty
-                                @endforelse
-
-
-                            </ul>
-                        </div>
-                        <div class="widget">
-                            <div class="shop_banner">
-                                <div class="banner_img overlay_bg_20">
-                                    <img src="{{asset('front_assets/images/sidebar_banner_img.jpg')}}" alt="sidebar_banner_img">
-                                </div>
-                                <div class="shop_bn_content2 text_white">
-                                    <h5 class="text-uppercase shop_subtitle">New Collection</h5>
-                                    <h3 class="text-uppercase shop_title">Sale 30% Off</h3>
-                                    <a href="#" class="btn btn-white rounded-0 btn-sm text-uppercase">Shop Now</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    @include('front.shop.Filter')
                 </div>
             </div>
         </div>
@@ -249,9 +160,10 @@
 @endsection
 @section('script')
 <script>
-    $('.brand-label').change(function (){
+    $('.brand-label, .attribute-label,.collection-label').change(function() {
         apply_filters();
-    })
+    });
+
     $('#sort').change(function (){
         apply_filters();
 
@@ -262,6 +174,8 @@
     })
     function apply_filters(){
         let brands = [];
+        let collections = [];
+        let attributes = {};
         let price_min = $('#price_first').val();
         let price_max = $('#price_second').val();
         let url= '{{url()->current()}}?'
@@ -274,6 +188,26 @@
            }
         });
 
+        $('.collection-label').each(function (){
+           if($(this).is(":checked") == true){
+
+             collections.push($(this).val());
+
+           }
+        });
+
+        $('.attribute-label').each(function () {
+            if ($(this).is(":checked")) {
+                // let attributeId = $(this).attr('name').match(/\d+/)[0];
+                let valueId = $(this).val();
+                let attributeName = $(this).closest('.widget').find('.widget_title').data('attribute');
+                if (!attributes[attributeName]) {
+                    attributes[attributeName] = [];
+                }
+                attributes[attributeName].push(valueId);
+            }
+        });
+
         //Price Range Filter
         if(price_min !=''&& price_max !=''){
 
@@ -284,6 +218,20 @@
         if (brands.length >0){
             url+='&brand='+brands.toString()
         }
+
+        //collections Filter
+        if (collections.length >0){
+            url+='&collection='+collections.toString()
+        }
+
+        // Attributes Filter
+        if (Object.keys(attributes).length > 0) {
+            for (const [attributeName, valueIds] of Object.entries(attributes)) {
+                url += `&${attributeName}=${valueIds}`;
+            }
+        }
+
+
         //sort Filter
         url += '&sort='+$('#sort').val()
 

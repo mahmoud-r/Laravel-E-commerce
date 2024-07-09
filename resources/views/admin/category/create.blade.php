@@ -7,6 +7,8 @@
     <li class="breadcrumb-item "><a href="{{route('categories.index')}}">Categories</a></li>
     <li class="breadcrumb-item active">Create</li>
 @endsection
+@section('title')Categories - create @endsection
+
 @section('header')
     <section class="content-header">
         <div class="container-fluid">
@@ -68,11 +70,16 @@
                         <div class="mb-3">
                             <label for="showHome">show on Home</label>
                             <select name="showHome" id="showHome" class=" form-control"  >
-                                <option value="1"> Yes</option>
-                                <option value="0" selected> No</option>
+                                <option value="1" selected> Yes</option>
+                                <option value="0" > No</option>
                             </select>
                             <p></p>
 
+                        </div>
+                        <div class="mb-3">
+                            <label for="slug">Sort</label>
+                            <input type="number" min="0" name="sort"   id="sort"  class="form-control" placeholder="Sort">
+                            <p></p>
                         </div>
                     </div>
                 </div>
@@ -136,6 +143,14 @@
                         $('#slug').removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
 
                     }
+                    if(errors['sort']){
+
+                        $('#sort').addClass('is-invalid').siblings('p').addClass('invalid-feedback').html([errors['slug']]);
+
+                    }else {
+                        $('#sort').removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
+
+                    }
                 }
 
 
@@ -179,7 +194,7 @@
         maxFiles: 1,
         paramName: 'image',
         addRemoveLinks: true,
-        acceptedFiles: "image/jpeg,image/png,image/gif",
+        acceptedFiles: "image/jpeg,image/png,image/gif,image/webp",
         headers: {
             'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
         }, success: function(file, response){

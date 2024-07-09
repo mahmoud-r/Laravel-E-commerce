@@ -18,12 +18,8 @@
 
 <!-- START HEADER -->
 
-@include('front.layouts.header.home_header')
+@include('front.layouts.header.header')
 
-{{--@include('front.layouts.header.header')--}}
-
-{{--@includeWhen(request()->is('/'), 'front.layouts.header.home_banner')--}}
-{{--@includeUnless(request()->is('/'), 'front.layouts.header.header')--}}
 
 
 <!-- END HEADER -->
@@ -52,7 +48,7 @@
 
 {{--mini Cart--}}
 <div id="miniCartParent">
-@include('front.layouts.include.mini_cart')
+    @include('front.layouts.include.mini_cart')
 </div>
 {{--@include('front.popup.shop-quick-view')--}}
 
@@ -88,31 +84,33 @@
             }
         })
     }
-    $(document).ready(function() {
-        $('#category-search').on('change', function() {
+
+    $(document).ready(function () {
+        $('#category-search').on('change', function () {
             var categorySlug = $(this).val();
-            var query =  $('#search').val()
+            var query = $('#search').val()
             var formAction;
 
             if (categorySlug) {
                 formAction = "{{ route('front.shop', ':category') }}";
                 formAction = formAction.replace(':category', categorySlug);
-                search(query,categorySlug)
+                search(query, categorySlug)
             } else {
                 formAction = "{{ route('front.shop') }}";
-                search(query,'')
+                search(query, '')
             }
 
             $('#searchForm').attr('action', formAction);
         });
-        $('#search').on('input', function() {
+        $('#search').on('input', function () {
             var query = $(this).val();
             var category = $('#category-search').val();
 
-            search(query,category)
+            search(query, category)
 
         });
-        function search(query,category){
+
+        function search(query, category) {
             if (query.length > 2) {
                 $.ajax({
                     url: "{{ route('front.search.products') }}",
@@ -121,11 +119,11 @@
                         search: query,
                         category: category
                     },
-                    success: function(response) {
+                    success: function (response) {
                         $('#searchResults').addClass('active');
                         $('#searchResults').html(response);
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         console.error(xhr.responseText);
                     }
                 });
@@ -134,7 +132,8 @@
                 $('#searchResults').empty();
             }
         }
-        $('#category').on('change', function() {
+
+        $('#category').on('change', function () {
             var query = $('#search').val();
             var category = $(this).val();
 
@@ -146,11 +145,11 @@
                         search: query,
                         category: category
                     },
-                    success: function(response) {
+                    success: function (response) {
                         $('#searchResults').addClass('active');
                         $('#searchResults').html(response);
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         console.error(xhr.responseText);
                     }
                 });
@@ -160,24 +159,25 @@
             }
         });
     });
-    function deleteCompare(productId){
-        var url = '{{Route("front.compare.destroy","ID")}}';
-        var newUrl =url.replace('ID',productId)
-        $.ajax({
-            url :newUrl,
-            type : 'delete',
-            data:'',
-            dataType :'json',
-            success:function (response){
 
-                if(response.status == true){
-                    $('.product_'+response.productDeleted).fadeOut();
+    function deleteCompare(productId) {
+        var url = '{{Route("front.compare.destroy","ID")}}';
+        var newUrl = url.replace('ID', productId)
+        $.ajax({
+            url: newUrl,
+            type: 'delete',
+            data: '',
+            dataType: 'json',
+            success: function (response) {
+
+                if (response.status == true) {
+                    $('.product_' + response.productDeleted).fadeOut();
                     Toast.fire({
                         icon: 'success',
                         title: response.msg
                     })
 
-                }else {
+                } else {
                     Toast.fire({
                         icon: 'error',
                         title: response.msg
@@ -187,6 +187,34 @@
         })
     }
 
+</script>
+<script>
+    $('#NewsletterForm').submit(function (e) {
+        e.preventDefault();
+        var form = $(this);
+        $.ajax({
+            url: '{{Route('front.storeNewsletter')}}',
+            type: 'post',
+            data: form.serializeArray(),
+            dataType: 'json',
+            success: function (response) {
+                if (response.status == true) {
+                    $('#NewsletterForm #email').val('')
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Subscribe to newsletter successfully!'
+                    })
+                } else {
+                    Toast.fire({
+                        icon: 'error',
+                        title: response.errors.email
+                    })
+                }
+            }, error: function (jqXHR, exception) {
+                console.log('something went wrong')
+            }
+        })
+    });
 </script>
 </body>
 </html>

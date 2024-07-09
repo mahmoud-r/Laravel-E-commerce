@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('image')->nullable()->default(Null);
             $table->boolean('status')->default(true);
             $table->boolean('showHome')->default(false);
+            $table->integer('sort')->default(0);
             $table->timestamps();
         });
     }

@@ -62,6 +62,8 @@ class RegisterController extends Controller
                 'string',
                 'min:8',
                 'confirmed',
+                'regex:/[A-Z]/',
+                'regex:/[0-9]/'
             ],
         ]);
     }

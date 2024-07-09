@@ -4,6 +4,7 @@
 
 @endsection
 
+@section('title')Shipments - {{$shipment->shipment_number}} @endsection
 
 
 @section('breadcrumb')
@@ -71,10 +72,10 @@
                                     <td class="text-center">
                                         <strong>{{$item->qty}}</strong>
                                         <span>×</span>
-                                        <strong>${{number_format($item->price,2)}}</strong>
+                                        <strong>{{number_format($item->price,2)}} EGP</strong>
                                     </td>
                                     <td class="text-center">
-                                        <span>${{number_format($item->total,2)}}</span>
+                                        <span>{{number_format($item->total,2)}} EGP</span>
                                     </td>
                                 </tr>
                             @empty
@@ -152,11 +153,13 @@
                                 <textarea class="form-control" rows="3" placeholder="Add note..." name="note" cols="50" id="note">{{optional($shipment->info)->note}}</textarea>
 
                             </div>
+                            @can('shipment-update')
                             <button class="btn btn-primary" type="submit"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                     <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
                                     <path d="M9 12l2 2l4 -4"></path>
                                 </svg> Save</button>
+                            @endcan
                         </form>
                     </div>
                 </div>
@@ -224,7 +227,7 @@
                                     Shipping fee
                                 </dt>
                                 <dd class="col-auto">
-                                    ${{number_format($shipment->price,2)}}
+                                    {{number_format($shipment->price,2)}} EGP
                                 </dd>
                             </div>
                             <div class="row">
@@ -310,6 +313,7 @@
 
 
     <!-- Modal -->
+    @can('shipment-update')
     <div class="modal fade modal-blur" id="update-shipping-status-modal" tabindex="-1" aria-labelledby="update-shipping-status-modal" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -345,7 +349,7 @@
             </div>
         </div>
     </div>
-
+    @endcan
 
 
 

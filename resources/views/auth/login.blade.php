@@ -68,13 +68,19 @@
                                     <button type="submit" class="btn btn-fill-out btn-block" name="login">  {{ __('Login') }}</button>
                                 </div>
                             </form>
+                            @if(config('services.facebook.status') == '1' || config('services.google.status') == '1')
                             <div class="different_login">
                                 <span> or</span>
                             </div>
                             <ul class="btn-login list_none text-center">
-                                <li><a href="#" class="btn btn-facebook"><i class="ion-social-facebook"></i>Facebook</a></li>
-                                <li><a href="#" class="btn btn-google"><i class="ion-social-googleplus"></i>Google</a></li>
+                                @if(config('services.facebook.status') == '1')
+                                <li><a href="{{route('redirectToFacebook') }}" class="btn btn-facebook"><i class="ion-social-facebook"></i>Facebook</a></li>
+                                @endif
+                                @if(config('services.google.status') == '1')
+                                <li><a href="{{ route('redirectToGoogle') }}" class="btn btn-google"><i class="ion-social-googleplus"></i>Google</a></li>
+                                 @endif
                             </ul>
+                            @endif
                             <div class="form-note text-center">Don't Have an Account? <a href="{{route('register')}}">Register now</a></div>
                         </div>
                     </div>

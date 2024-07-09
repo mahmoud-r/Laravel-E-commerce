@@ -6,6 +6,8 @@
     <li class="breadcrumb-item "><a href="{{route('brands.index')}}">Brands</a></li>
     <li class="breadcrumb-item active">{{$brand->name}}</li>
 @endsection
+@section('title')Brands - {{$brand->name}} @endsection
+
 @section('header')
     <section class="content-header">
         <div class="container-fluid">
@@ -172,7 +174,7 @@
             maxFiles: 1,
             paramName: 'image',
             addRemoveLinks: true,
-            acceptedFiles: "image/jpeg,image/png,image/gif",
+            acceptedFiles: "image/jpeg,image/png,image/gif,image/webp",
             headers: {
                 'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
             }, success: function(file, response){

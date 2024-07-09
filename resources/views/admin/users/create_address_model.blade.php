@@ -160,7 +160,7 @@
 
                 </div>
                 <div class="modal-footer justify-content-end">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close">Close</button>
                     <button type="submit" class="btn btn-fill-out btn-primary ">Save</button>
                 </div>
             </form>

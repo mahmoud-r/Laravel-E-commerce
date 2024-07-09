@@ -9,6 +9,14 @@ use Illuminate\Support\Facades\Validator;
 
 class GovernorateController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('permission:locations-list|locations-create|locations-edit|locations-delete', ['only' => ['index'] ]);
+        $this->middleware('permission:locations-create', ['only' => ['create','store']]);
+        $this->middleware('permission:locations-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:locations-delete', ['only' => ['destroy']]);
+
+    }
     /**
      * Display a listing of the resource.
      */

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\front;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreAdressRequest;
+use App\Http\Requests\StoreAddressRequest;
 use App\Http\Requests\UpdateAdressRequest;
 use App\Models\City;
 use App\Models\Governorate;
@@ -26,7 +26,7 @@ class UserAddressController extends Controller
     }
 
 
-    public function store(StoreAdressRequest $request)
+    public function store(StoreAddressRequest $request)
     {
 
         if ($request->is_primary) {

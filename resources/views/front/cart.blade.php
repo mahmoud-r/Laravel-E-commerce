@@ -81,7 +81,7 @@
                                     </td>
 
                                     <td class="product-name" data-title="Product"><a href="{{route('front.product',$item->options->slug)}}">{{$item->name}}</a></td>
-                                    <td class="product-price itemPrice-{{$item->id}} " data-title="Price">${{$item->price}}</td>
+                                    <td class="product-price itemPrice-{{$item->id}} " data-title="Price">{{$item->price}} EGP</td>
 
                                     <td class="product-quantity" data-title="Quantity">
                                         <div class="quantity">
@@ -91,7 +91,7 @@
                                         </div>
                                     </td>
 
-                                    <td class="product-subtotal itemTotal-{{$item->id}}" data-title="Total">${{$item->total }}</td>
+                                    <td class="product-subtotal itemTotal-{{$item->id}}" data-title="Total">{{$item->total }} EGP</td>
                                     <td class="product-remove" data-title="Remove"><a href="javascript:void(0)" onclick="deleteItem('{{$item->rowId}}')"><i class="ti-close"></i></a></td>
                                 </tr>
 
@@ -164,7 +164,7 @@
                                 <tbody id="OrderSummery">
                                 <tr>
                                     <td class="cart_total_label">Cart Subtotal</td>
-                                    <td class="cart_total_amount cartSubTotal" >${{Cart::subtotal()}}</td>
+                                    <td class="cart_total_amount cartSubTotal" >{{Cart::subtotal()}} EGP</td>
                                 </tr>
                                 <tr>
                                     <td>Discount</td>
@@ -176,7 +176,7 @@
                                 </tr>
                                 <tr>
                                     <td class="cart_total_label">Total</td>
-                                    <td class="cart_total_amount "><strong class="cartTotal" id="grand_total">${{Cart::total()}}</strong></td>
+                                    <td class="cart_total_amount "><strong class="cartTotal" id="grand_total">{{Cart::total()}} EGP</strong></td>
                                 </tr>
 
                                 </tbody>
@@ -224,11 +224,11 @@
                     $('#OrderSummery').append(`
                                  <tr>
                                     <td class="cart_total_label">Shipping</td>
-                                    <td class="cart_total_amount" id="total_shipping">$${response.total_shipping}</td>
+                                    <td class="cart_total_amount" id="total_shipping">${response.total_shipping} EGP</td>
                                 </tr>
                                 <tr>
                                     <td class="cart_total_label">Total</td>
-                                    <td class="cart_total_amount "><strong class="cartTotal" id="grand_total">$${response.grand_total}</strong></td>
+                                    <td class="cart_total_amount "><strong class="cartTotal" id="grand_total">${response.grand_total} EGP</strong></td>
                                 </tr>
                     `)
 

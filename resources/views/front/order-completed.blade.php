@@ -121,7 +121,7 @@
                             @endif
                         </p>
                         @php
-                            $payment_method = \App\Models\PaymentMethod::getSettings($order->payment_method)
+                            $payment_method = getPaymentMethod($order->payment_method)
                         @endphp
                         <p>
                             <span class="d-inline-block">Payment method:</span>
@@ -132,11 +132,11 @@
                         </p>
                         <p>
                             @php
-                                if ($order->status->status =='pending'){
+                                if ($order->payment->status =='pending'){
                                     $payment_class = 'bg-warning text-warning-fg bg-secondary';
-                                }elseif ($order->status->status =='completed'){
+                                }elseif ($order->payment->status =='completed'){
                                     $payment_class = 'bg-success text-success-fg';
-                                }elseif ($order->status->status =='failed'){
+                                }elseif ($order->payment->status =='failed'){
                                     $payment_class = 'bg-danger text-danger-fg';
                                 }else{
                                     $payment_class = 'bg-warning text-warning-fg bg-secondary';
@@ -144,21 +144,18 @@
                             @endphp
                             <span class="d-inline-block">Payment status:</span>
                             <span class="order-customer-info-meta" style="text-transform: uppercase">
-                                <span class="badge {{$payment_class}}">Pending</span>
+                                <span class="badge {{$payment_class}}">{{$order->payment->status}}</span>
                              </span>
                         </p>
 
                     </div>
-                    @php
-                       $payment_method = \App\Models\PaymentMethod::getSettings($order->payment_method)
-                    @endphp
                     @if($order->payment_method == 'bank_transfer' && $payment_method['payment_bank_transfer_display_bank_info'] ==1)
                         @if(1)
                     <div class="alert alert-info mt-3">
 
                         {{$payment_method['payment_bank_transfer_description']}}
-                        <br><span>Bank transfer amount: <strong>${{number_format($order->grand_total,2)}}</strong></span>
-                        <br><span>Bank transfer description: <strong>Payment for order {{$order->order_number}}</strong></span>
+                        <br><span>Bank transfer amount: <strong>{{number_format($order->grand_total,2)}} EGP</strong></span>
+                        <br><span>Bank transfer description: <strong>Payment for order {{$order->order_number}} </strong></span>
                     </div>
                     @endif
                     @endif
@@ -194,7 +191,7 @@
 
                                     </div>
                                     <div class="col-lg-3 col-md-3 col-3 float-md-end text-md-end">
-                                        <p>${{number_format($item->total,2)}}</p>
+                                        <p>{{number_format($item->total,2)}} EGP</p>
                                     </div>
                                 </div>
                                 @empty
@@ -208,20 +205,20 @@
                             <p>Subtotal:</p>
                         </div>
                         <div class="col-6 float-end">
-                            <p class="price-text text-end"> ${{number_format($order->subtotal,2)}}</p>
+                            <p class="price-text text-end"> {{number_format($order->subtotal,2)}} EGP</p>
                         </div>
                         <div class="col-6">
                             <p>Shipping fee:</p>
                         </div>
                         <div class="col-6 float-end">
-                            <p class="price-text text-end"> ${{number_format($order->shipping,2)}} </p>
+                            <p class="price-text text-end"> {{number_format($order->shipping,2)}} EGP </p>
                         </div>
                         @if($order->discount)
                         <div class="col-6">
                             <p>Discount({{$order->coupon_code}}):</p>
                         </div>
                         <div class="col-6 float-end">
-                            <p class="price-text text-end"> ${{number_format($order->discount,2)}} </p>
+                            <p class="price-text text-end"> {{number_format($order->discount,2)}} EGP </p>
                         </div>
                         @endif
                     </div>
@@ -231,7 +228,7 @@
                             <p>Total:</p>
                         </div>
                         <div class="col-6 float-end">
-                            <p class="total-text raw-total-text"> ${{number_format($order->grand_total,2)}} </p>
+                            <p class="total-text raw-total-text"> {{number_format($order->grand_total,2)}} EGP</p>
                         </div>
                     </div>
                 </div>

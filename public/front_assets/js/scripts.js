@@ -476,39 +476,6 @@ PAGE JS
 		carousel_slider();
 		slick_slider();
 	});
-	/*===================================*
-	11. CONTACT FORM JS
-	*===================================*/
-	$("#submitButton").on("click", function(event) {
-	    event.preventDefault();
-	    var mydata = $("form").serialize();
-	    $.ajax({
-	        type: "POST",
-	        dataType: "json",
-	        url: "contact.php",
-	        data: mydata,
-	        success: function(data) {
-	            if (data.type === "error") {
-	                $("#alert-msg").removeClass("alert, alert-success");
-	                $("#alert-msg").addClass("alert, alert-danger");
-	            } else {
-	                $("#alert-msg").addClass("alert, alert-success");
-	                $("#alert-msg").removeClass("alert, alert-danger");
-	                $("#first-name").val("Enter Name");
-	                $("#email").val("Enter Email");
-					$("#phone").val("Enter Phone Number");
-	                $("#subject").val("Enter Subject");
-	                $("#description").val("Enter Message");
-
-	            }
-	            $("#alert-msg").html(data.msg);
-	            $("#alert-msg").show();
-	        },
-	        error: function(xhr, textStatus) {
-	            alert(textStatus);
-	        }
-	    });
-	});
 
 	/*===================================*
 	12. POPUP JS

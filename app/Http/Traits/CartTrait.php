@@ -43,10 +43,12 @@ trait CartTrait
         if ($updated) {
             Session::put('cart_last_update', Carbon::now());
         }
+        $count = Cart::instance('default')->count();
 
         return [
             'updated' => $updated,
             'msg' => $msg,
+            'count' =>$count
         ];
     }
 

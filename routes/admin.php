@@ -3,22 +3,30 @@
 use App\Http\Controllers\admin\admins\AdminController;
 use App\Http\Controllers\admin\admins\RoleController;
 use App\Http\Controllers\admin\auth\AdminAuthController;
+use App\Http\Controllers\admin\ContactController;
 use App\Http\Controllers\admin\DashboardController;
+use App\Http\Controllers\admin\NewsletterController;
 use App\Http\Controllers\admin\orders\OrderController;
 use App\Http\Controllers\admin\orders\ShipmentController;
 use App\Http\Controllers\admin\settings\CitesController;
 use App\Http\Controllers\admin\settings\DiscountCouponController;
 use App\Http\Controllers\admin\settings\GovernorateController;
+use App\Http\Controllers\admin\settings\HomeSliderController;
+use App\Http\Controllers\admin\settings\PagesController;
 use App\Http\Controllers\admin\settings\PaymentMethodController;
 use App\Http\Controllers\admin\settings\SettingsController;
 use App\Http\Controllers\admin\settings\ShippingController;
+use App\Http\Controllers\admin\shop\AttributeController;
 use App\Http\Controllers\admin\shop\BrandController;
 use App\Http\Controllers\admin\shop\CategoryController;
+use App\Http\Controllers\admin\shop\ProductCollectionController;
 use App\Http\Controllers\admin\shop\ProductController;
 use App\Http\Controllers\admin\shop\ProductRatingController;
 use App\Http\Controllers\admin\shop\SubCategoryController;
 use App\Http\Controllers\admin\TempImagesController;
 use App\Http\Controllers\admin\UserController;
+use App\Http\Controllers\MenuController;
+use App\Models\Page;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -65,7 +73,7 @@ Route::group(['prefix'=>'dashboard'],function (){
 
 
 
-//        categores
+//        categories
         Route::post('/upload-temp-image',[TempImagesController::class,'create'])->name('temp-images.create');
         Route::get('categories/getall',[CategoryController::class,'getAll'])->name('categories.getAll');
         Route::resource('categories',CategoryController::class);
@@ -109,7 +117,21 @@ Route::group(['prefix'=>'dashboard'],function (){
         Route::post('/products/updateImages',[ProductController::class,'updateImages'])->name('product_update_images');
         Route::get('products/getall',[ProductController::class,'getAll'])->name('products.getAll');
         Route::delete('/products/deleteImages',[ProductController::class,'deleteImages'])->name('product_delete_images');
+        Route::post('/products/storeAttribute',[ProductController::class,'storeAttribute'])->name('products.storeAttribute');
+        Route::post('/products/storeAttributeValue',[ProductController::class,'storeAttributeValue'])->name('products.storeAttributeValue');
         Route::resource('products',ProductController::class);
+
+
+        //attributes
+        Route::get('attributes/create/{category}',[AttributeController::class,'create'])->name('attributes.create');
+        Route::get('attributes/getAllByCategory/{category}',[AttributeController::class,'getAllByCategory'])->name('attributes.getAllByCategory');
+        Route::get('attributes/getAllCategories',[AttributeController::class,'getAllCategories'])->name('attributes.getAllCategories');
+        Route::resource('attributes',AttributeController::class)->except(['create','show']);
+
+//        Collections
+        Route::get('collections/get-products',[ProductCollectionController::class,'getProducts'])->name('collections.getProducts');
+        Route::resource('collections',ProductCollectionController::class);
+
 
         //DiscountCoupon
         Route::resource('discount',DiscountCouponController::class);
@@ -135,10 +157,6 @@ Route::group(['prefix'=>'dashboard'],function (){
         Route::post('/shipment/update_info/{shipment}',[ShipmentController::class,'shipmentUpdateInfo'])->name('shipmentUpdateInfo');
 
 
-        //Payment
-        Route::get('/payment-methods',[PaymentMethodController::class,'index'])->name('payment_methods.index');
-        Route::post('/payment-methods/update', [PaymentMethodController::class, 'update'])->name('payment-methods.update');
-        Route::post('/payment-methods/update_status', [PaymentMethodController::class, 'updateStatus'])->name('payment-methods.updateStatus');
 
         //reviews
         Route::name('reviews.')->prefix('reviews')->group(function (){
@@ -157,8 +175,73 @@ Route::group(['prefix'=>'dashboard'],function (){
             Route::put('/store',[SettingsController::class,'store'])->name('store');
             Route::get('/email',[SettingsController::class,'email'])->name('email');
             Route::get('/general',[SettingsController::class,'general'])->name('general');
+            Route::get('/social',[SettingsController::class,'social'])->name('social');
+            Route::get('/social-login',[SettingsController::class,'social_login'])->name('social_login');
+            Route::get('/recaptcha',[SettingsController::class,'recaptcha'])->name('recaptcha');
 
         });
+        //Payment
+        Route::get('settings/payment-methods',[PaymentMethodController::class,'index'])->name('payment_methods.index');
+        Route::post('settings/payment-methods/update', [PaymentMethodController::class, 'update'])->name('payment-methods.update');
+        Route::post('settings/payment-methods/update_status', [PaymentMethodController::class, 'updateStatus'])->name('payment-methods.updateStatus');
+
+
+        //Pages
+        Route::name('pages.')->prefix('pages')->group(function (){
+            Route::get('/',[PagesController::class,'index'])->name('index');
+            Route::post('/store',[PagesController::class,'store'])->name('store');
+            Route::get('/home',[PagesController::class,'home'])->name('home');
+            Route::get('/banners',[PagesController::class,'HomeBanners'])->name('HomeBanners');
+            Route::get('/contact',[PagesController::class,'contactPage'])->name('contactPage');
+            Route::get('/about',[PagesController::class,'aboutPage'])->name('aboutPage');
+            Route::get('/term-condition',[PagesController::class,'termConditionPage'])->name('termConditionPage');
+            Route::post('/banners/store',[PagesController::class,'HomeBannersStore'])->name('HomeBannersStore');
+            Route::post('/about/img/store',[PagesController::class,'ImgAboutStore'])->name('ImgAboutStore');
+            Route::post('/about/box/store/icon',[PagesController::class,'BoxIconStore'])->name('BoxIconStore');
+            Route::get('get-sources/{type}', [PagesController::class, 'getSources'])->name('getSources');
+
+        });
+
+        //Content
+        Route::name('contact.')->prefix('contact')->group(function (){
+            Route::get('/',[ContactController::class,'index'])->name('index');
+            Route::get('/show/{contact}',[ContactController::class,'show'])->name('show');
+            Route::get('getall',[ContactController::class,'getAll'])->name('getAll');
+            Route::Delete('/destroy/{contact}',[ContactController::class,'destroy'])->name('destroy');
+
+        });
+
+        //Home Slider
+        Route::name('HomeSlider.')->prefix('slider')->group(function (){
+            Route::get('/',[HomeSliderController::class,'index'])->name('index');
+            Route::post('/store',[HomeSliderController::class,'store'])->name('store');
+            Route::get('/edit/{slider}',[HomeSliderController::class,'edit'])->name('edit');
+            Route::put('/update/{slider}',[HomeSliderController::class,'update'])->name('update');
+            Route::Delete('/destroy/{slider}',[HomeSliderController::class,'destroy'])->name('destroy');
+
+        });
+
+
+        //Menus
+        Route::name('menus.')->prefix('menus')->group(function (){
+            Route::get('/', [MenuController::class, 'index'])->name('index');
+            Route::get('/create', [MenuController::class, 'create'])->name('create');
+            Route::post('/create-menu', [MenuController::class, 'store'])->name('create-menu');
+            Route::post('add-categories-to-menu',[MenuController::class,'addCatToMenu'])->name('addCatToMenu');
+            Route::post('add-custom-link',[MenuController::class,'addCustomLink'])->name('addCustomLink');
+            Route::post('add-page',[MenuController::class,'addPage'])->name('addPage');
+            Route::post('update-menu',[menuController::class,'updateMenu'])->name('updateMenu');
+            Route::post('update-menuitem/{id}',[menuController::class,'updateMenuItem'])->name('updateMenuItem');
+            Route::get('delete-menuitem/{id}/{key}/{in?}/{in2?}',[menuController::class,'deleteMenuItem'])->name('deleteMenuItem');
+            Route::get('delete-menu/{id}',[menuController::class,'destroy'])->name('destroy');
+
+
+        });
+
+
+
+        Route::get('getall',[NewsletterController::class,'getAll'])->name('newsletter.getAll');
+        Route::resource('newsletter',NewsletterController::class)->except('update','create,edit');
 
         //helper
         Route::get('/getslug', function(Request $request){

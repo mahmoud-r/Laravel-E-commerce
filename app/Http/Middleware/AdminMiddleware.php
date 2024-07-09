@@ -19,6 +19,8 @@ use Symfony\Component\HttpFoundation\Response;
         if(!Auth::guard('admin')->check()){
             return redirect('dashboard/login');
         }
+        Auth::shouldUse('admin');
+
         return $next($request);
     }
 

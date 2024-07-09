@@ -10,6 +10,9 @@
     <li class="breadcrumb-item "><a href="{{route('categories.index')}}">{{$category->name}}</a></li>
     <li class="breadcrumb-item active">Create</li>
 @endsection
+
+@section('title')Sub Categories - create @endsection
+
 @section('header')
     <section class="content-header">
         <div class="container-fluid">

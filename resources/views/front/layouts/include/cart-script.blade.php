@@ -110,11 +110,11 @@
                     if (response.cartCount === 0) {
                         location.reload();
                     }else {
-                        $('.cartSubTotal').html('$'+response.cartSubTotal)
-                        $('.cartTotal').html('$'+response.cartTotal)
+                        $('.cartSubTotal').html(response.cartSubTotal +' EGP')
+                        $('.cartTotal').html(response.cartTotal +' EGP')
                         $('#'+response.rowId).remove();
-                        $('.cart_count').html(response.cartCount);
-                        $('.cartCount').html(response.cartCount);
+                        $('.cart_count').html(response.cartCount );
+                        $('.cartCount').html(response.cartCount );
 
                     }
 
@@ -139,10 +139,10 @@
                         icon: 'success',
                         title: response.msg
                     });
-                    $('.itemTotal-' + itemId).html('$' + response.itemTotal);
-                    $('.itemPrice-' + itemId).html('$' + response.price);
-                    $('.cartSubTotal').html('$' + response.cartSubTotal);
-                    $('.cartTotal').html('$' + response.cartTotal);
+                    $('.itemTotal-' + itemId).html(response.itemTotal + ' EGP');
+                    $('.itemPrice-' + itemId).html(response.price + ' EGP');
+                    $('.cartSubTotal').html(response.cartSubTotal + ' EGP');
+                    $('.cartTotal').html(response.cartTotal + ' EGP');
                     $('.cartCount').html(response.cartCount);
                     $('.cart_count').html(response.cartCount);
                 } else {
@@ -168,20 +168,20 @@
         });
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-        // Get the last update check from localStorage
-        var lastCheck = localStorage.getItem('lastCartUpdateCheck');
-
-        // Get today's date as a string (e.g., '2024-05-18')
-        var today = new Date().toISOString().split('T')[0];
-
-        // If last check was not today, perform the check
-        if (lastCheck !== today) {
-            checkCartUpdates();
-            // Update localStorage with today's date
-            localStorage.setItem('lastCartUpdateCheck', today);
-        }
-    });
+    // document.addEventListener('DOMContentLoaded', function() {
+    //     // Get the last update check from localStorage
+    //     var lastCheck = localStorage.getItem('lastCartUpdateCheck');
+    //
+    //     // Get today's date as a string (e.g., '2024-05-18')
+    //     var today = new Date().toISOString().split('T')[0];
+    //
+    //     // If last check was not today, perform the check
+    //     if (lastCheck !== today) {
+    //         checkCartUpdates();
+    //         // Update localStorage with today's date
+    //         localStorage.setItem('lastCartUpdateCheck', today);
+    //     }
+    // });
     function checkCartUpdates() {
         $.ajax({
             url: '{{ route('front.checkCartUpdates') }}',

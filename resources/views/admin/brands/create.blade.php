@@ -10,6 +10,8 @@
     <a href="{{Route('brands.index')}}" class="btn btn-primary">Back</a>
 
 @endsection
+@section('title')Brands - create @endsection
+
 @section('breadcrumb')
     <li class="breadcrumb-item "><a href="{{route('dashboard')}}">Dashboard</a></li>
     <li class="breadcrumb-item "><a href="{{route('brands.index')}}">Brands</a></li>
@@ -176,7 +178,7 @@
         maxFiles: 1,
         paramName: 'image',
         addRemoveLinks: true,
-        acceptedFiles: "image/jpeg,image/png,image/gif",
+        acceptedFiles: "image/jpeg,image/png,image/gif,image/webp",
         headers: {
             'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
         }, success: function(file, response){

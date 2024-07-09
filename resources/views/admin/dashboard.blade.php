@@ -1,5 +1,6 @@
 @extends('admin.master')
 
+@section('title')Dashboard @endsection
 
 @section('style')
 <style>
@@ -111,8 +112,8 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="details px-4 py-3 d-flex flex-column justify-content-between">
                                 <div class="desc fw-medium">Total Sale</div>
-                                <div class="number fw-bolder">
-                                    <span>${{number_format($totalRevenue,2)}}</span>
+                                <div class="number fw-bolder" style="font-size: 30px">
+                                    <span>{{number_format($totalRevenue,2)}} EGP</span>
                                 </div>
                            </div>
                             <div class="visual ps-1 position-absolute end-0">
@@ -146,12 +147,12 @@
                             <div class="rp-card-status text-center mt-3">
                                 <p>
                                     <svg class="icon icon-sm mb-0 me-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" style="color: rgb(128, 188, 0);"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M7 3.34a10 10 0 1 1 -4.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 4.995 -8.336z" stroke-width="0" fill="currentColor"></path></svg>
-                                    <strong>${{number_format($completedOrders,2)}}</strong>
+                                    <strong>{{number_format($completedOrders,2)}} EGP</strong>
                                     <span class="ms-1 ">Completed this Month</span>
                                 </p>
                                 <p>
                                     <svg class="icon icon-sm mb-0 me-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" style="color: rgb(233, 30, 99);"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M7 3.34a10 10 0 1 1 -4.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 4.995 -8.336z" stroke-width="0" fill="currentColor"></path></svg>
-                                    <strong>${{number_format($pendingOrders,2)}}</strong>
+                                    <strong>{{number_format($pendingOrders,2)}} EGP</strong>
                                     <span class="ms-1">Pending this Month</span>
                                 </p>
                             </div>
@@ -193,7 +194,7 @@
                     beginAtZero: true,
                     ticks: {
                         callback: function(value, index, values) {
-                            return '$' + value;
+                            return value +' EGP';
                         }
                     }
                 }
@@ -238,7 +239,7 @@
                 },
                 doughnutlabel: {
                     labels: [{
-                        text: '${{ $pendingOrders + $completedOrders  }}',
+                        text: '{{ $pendingOrders + $completedOrders  }} EGP',
                         font: {
                             size: 20,
                             weight: 'bold'

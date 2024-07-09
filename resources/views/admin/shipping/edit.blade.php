@@ -8,6 +8,7 @@
         }
     </style>
 @endsection
+@section('title')Shipping Zones - {{$zone->name}} @endsection
 
 @section('breadcrumb')
     <li class="breadcrumb-item "><a href="{{route('dashboard')}}">Dashboard</a></li>

@@ -8,6 +8,7 @@
         }
     </style>
 @endsection
+@section('title')Cities @endsection
 
 
 @section('breadcrumb')

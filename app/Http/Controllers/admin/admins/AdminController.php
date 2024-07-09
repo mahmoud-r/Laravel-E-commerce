@@ -12,7 +12,14 @@ use Spatie\Permission\Models\Role;
 
 class AdminController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('permission:admin-list|admin-create|admin-edit|admin-delete', ['only' => ['index','getAll'] ]);
+        $this->middleware('permission:admin-create', ['only' => ['create','store']]);
+        $this->middleware('permission:admin-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:admin-delete', ['only' => ['destroy']]);
 
+    }
     public function index()
     {
 
@@ -21,6 +28,7 @@ class AdminController extends Controller
 
     public function getAll() {
         $admins = Admin::whereNotIn('name', ['Super Admin'])->latest()->get()->map(function ($admin){
+
             $roles = [];
             foreach ($admin->getRoleNames() as $role){
                 $roles[] =$role;
@@ -57,7 +65,7 @@ class AdminController extends Controller
             'phone' => ['required', 'phone:EG', 'unique:admins'],
             'status' => ['required','integer','in:0,1'],
             'notification' => ['required','integer','in:0,1'],
-            'password' => ['required', 'string', 'min:8', 'confirmed']
+            'password' => ['required', 'string', 'min:8', 'confirmed','regex:/[A-Z]/','regex:/[0-9]/'],
         ]);
         if ($validator->fails()){
             return response()->json([
@@ -102,7 +110,7 @@ class AdminController extends Controller
             'phone' => ['required', 'phone:EG', 'unique:admins,phone,' . $id],
             'status' => ['required','integer','in:0,1'],
             'notification' => ['required','integer','in:0,1'],
-            'password' => $request->is_change_password ? ['required', 'string', 'min:8', 'confirmed'] : []
+            'password' => $request->is_change_password ? ['required', 'string', 'min:8', 'confirmed','regex:/[A-Z]/','regex:/[0-9]/'] : []
         ]);
         if ($validator->fails()){
             return response()->json([

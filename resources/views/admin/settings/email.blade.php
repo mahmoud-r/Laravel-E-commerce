@@ -1,5 +1,7 @@
 @extends('admin.master')
 
+@section('title')Settings - Email @endsection
+
 @section('breadcrumb')
     <li class="breadcrumb-item "><a href="{{route('dashboard')}}">Dashboard</a></li>
     <li class="breadcrumb-item "><a href="{{route('settings.index')}}">Settings</a></li>
@@ -203,6 +205,19 @@
                                 </div>
                             </td>
                         </tr>
+                        <tr>
+                            <td class="template-name w-25">
+                                <span class="">Contact</span>
+                            </td>
+                            <td>Send a Thanks Email to the customer when submit Contact Form</td>
+
+                            <td class="text-end">
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" name="email_user_new_contact" id="email_user_new_contact" {{get_setting('email_user_new_contact') == true ?'checked':''}} class="custom-control-input form-switch " value="1"  >
+                                    <label class="custom-control-label" for="email_user_new_contact"></label>
+                                </div>
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -265,6 +280,20 @@
                                 </div>
                             </td>
                         </tr>
+                        <tr>
+                            <td class="template-name w-25">
+                                <span class="">Contact</span>
+                            </td>
+                            <td>Email template to send notice to administrator when system get new contact</td>
+
+                            <td class="text-end">
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" name="email_user_new_contact_admin" id="email_user_new_contact_admin" {{get_setting('email_user_new_contact_admin') == true ?'checked':''}} class="custom-control-input form-switch " value="1"  >
+                                    <label class="custom-control-label" for="email_user_new_contact_admin"></label>
+                                </div>
+                            </td>
+                        </tr>
+
                         </tbody>
                     </table>
                 </div>

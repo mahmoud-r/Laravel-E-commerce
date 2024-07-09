@@ -21,9 +21,8 @@ return new class extends Migration
             $table->decimal('weight',8,2)->default(0);
             $table->double('compare_price',10,2)->nullable();
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
-            $table->foreignId('sub_category_id')->constrained()->onDelete('cascade');
+            $table->foreignId('sub_category_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('brand_id')->constrained()->onDelete('cascade');
-            $table->enum('is_featured',['Yes','No'])->default('No');
             $table->string('sku');
             $table->integer('max_order');
             $table->integer('qty')->default(1);
@@ -31,7 +30,13 @@ return new class extends Migration
             $table->text('related_product')->nullable();
             $table->text('warranty')->nullable()->default('1 Year Warranty');
             $table->text('return')->nullable()->default('30 Day Return Policy');
-            $table->boolean('cachDelivery')->nullable()->default(1);
+            $table->string('seo_title')->nullable();
+            $table->text('seo_description')->nullable();
+            $table->enum('seo_index',['index','noindex'])->default('index');
+            $table->double('flash_sale_price', 10, 2)->nullable();
+            $table->dateTime('flash_sale_expiry_date')->nullable();
+            $table->integer('flash_sale_qty')->nullable();
+            $table->integer('flash_sale_qty_solid')->nullable()->default(0);
             $table->timestamps();
         });
     }

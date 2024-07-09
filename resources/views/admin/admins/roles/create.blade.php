@@ -18,6 +18,7 @@
 
 @endsection
 
+@section('title') Roles - create @endsection
 
 @section('breadcrumb')
     <li class="breadcrumb-item "><a href="{{route('dashboard')}}">Dashboard</a></li>

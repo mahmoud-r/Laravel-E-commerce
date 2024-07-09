@@ -17,7 +17,20 @@ use Illuminate\Support\Facades\Notification;
 
 class OrderController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('permission:order-list|order-payment-confirm|order-confirm|order-delete|order-cancel|order-update-shipping-information|order-update-shipping-status|order-update-note', ['only' => ['index','getAll','orderView'] ]);
+        $this->middleware('permission:order-confirm', ['only' => ['OrderConfirm']]);
+        $this->middleware('permission:order-cancel', ['only' => ['orderCancel']]);
+        $this->middleware('permission:order-payment-confirm', ['only' => ['paymentUpdateStatus']]);
+        $this->middleware('permission:order-update-shipping-information', ['only' => ['UpdateAddress']]);
+        $this->middleware('permission:order-update-shipping-status', ['only' => ['shipmentUpdateStatus']]);
+        $this->middleware('permission:order-update-note', ['only' => ['updateOrderNote']]);
+        $this->middleware('permission:order-delete', ['only' => ['destroy']]);
+
+    }
     public function index(){
+
         return view('admin.orders.index');
     }
 
@@ -46,14 +59,13 @@ class OrderController extends Controller
     }
 
 
-
-
     public function orderView($order_id){
         $order = Order::findorfail($order_id);
         $governorates = Governorate::get();
         $cities = City::where('governorate_id',$order->address->governorate_id)->get();
         return view('admin.orders.view',compact('order','cities','governorates'));
     }
+
 
     public function shipmentUpdateStatus(Request $request, $shipment){
         $shipment = Shipment::find($shipment);
@@ -82,6 +94,7 @@ class OrderController extends Controller
         $order->status->update(['admin_note'=>$request->admin_note]);
         return redirect(route('order.view',$request->order_id))->with('success','Note Updated Successfully');
     }
+
     public function UpdateAddress(OrderAdressRequest $request,$address){
         $address = OrderAddress::find($address);
         $address->update([
